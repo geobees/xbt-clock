@@ -19,7 +19,7 @@
   body::before{content:'';position:fixed;inset:0;
     background-image:linear-gradient(rgba(0,153,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,153,255,0.025) 1px,transparent 1px);
     background-size:40px 40px;pointer-events:none;z-index:0;}
-  .wrap{width:min(94vw,1180px);margin:0 auto;padding:clamp(20px,2vw,40px) clamp(16px,2vw,32px);position:relative;z-index:1;}
+  .wrap{width:min(96vw,2000px);margin:0 auto;padding:clamp(20px,2vw,40px) clamp(16px,2vw,32px);position:relative;z-index:1;}
 
   header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;
     padding-bottom:18px;border-bottom:1px solid var(--border);flex-wrap:wrap;row-gap:12px;}
@@ -152,8 +152,13 @@
   .foot-links{display:flex;gap:16px;flex-wrap:wrap;}
 
   /* ── Since-last-block + Miner Propagation panels ── */
-  .panels-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
-  @media(max-width:700px){.panels-row{grid-template-columns:1fr;}}
+  .panels-row{display:flex;flex-direction:column;gap:16px;}
+  .main-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,440px);gap:20px;align-items:start;}
+  .clock-col{min-width:0;width:100%;}
+  @media(max-width:900px){
+    .main-layout{grid-template-columns:1fr;}
+    .panels-row{margin-top:16px;}
+  }
   .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;
     overflow:hidden;display:flex;flex-direction:column;max-height:340px;}
   .panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;
@@ -241,9 +246,11 @@
 
   <div class="alerts" id="alerts"></div>
 
-  <div class="stage" id="stage">
-    <canvas id="ring"></canvas>
-    <div class="clock-tooltip" id="ringTip"></div>
+  <div class="main-layout">
+    <div class="clock-col">
+      <div class="stage" id="stage">
+        <canvas id="ring"></canvas>
+        <div class="clock-tooltip" id="ringTip"></div>
 
     <div class="window-label">
       <select id="windowSel">
@@ -338,9 +345,10 @@
     <input type="range" id="scrubSlider" min="0" max="0" value="0" step="1">
     <div class="scrub-live-pill live" id="livePill">● LIVE</div>
   </div>
+    </div>
 
-  <div class="panels-row">
-    <div class="panel">
+    <div class="panels-row">
+      <div class="panel">
       <div class="panel-head"><span>Since last block</span></div>
       <div class="since-block">
         <div class="since-lab">Elapsed</div>
@@ -367,6 +375,7 @@
         </table>
       </div>
     </div>
+  </div>
   </div>
 
   <footer>
@@ -775,7 +784,7 @@ function drawRing(){
     // cover-fit scale so the visible crop only ever shows the coin's true
     // circular interior — never its actual outer rim, which is where any
     // non-circular edge in the source artwork lives.
-    const innerR = R - 20;
+    const innerR = Math.max(0, R - 20);
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx, cy, innerR, 0, Math.PI*2);
@@ -783,7 +792,7 @@ function drawRing(){
     ctx.globalAlpha = 0.10;
     const iw = ringLogoImg.naturalWidth, ih = ringLogoImg.naturalHeight;
     const side = innerR * 2;
-    const scale = Math.max(side/iw, side/ih) * 1.4; // cover-fit + 40% zoom-in —
+    const scale = innerR > 0 ? Math.max(side/iw, side/ih) * 1.4 : 0; // cover-fit + 40% zoom-in —
     // the source PNG has a faint drop-shadow margin extending further left/
     // right than the actual solid coin body, so a modest zoom wasn't enough
     // to push it outside the visible circle; this pulls in past that margin.
