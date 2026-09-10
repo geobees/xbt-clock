@@ -1,19 +1,29 @@
 # XBT Clock
 
+<p align="center">
+  <img src="assets/logo.png" alt="XBT Clock logo" width="120">
+</p>
+
 A live single-page dashboard for **Bitcoin BLAKE2b (XBT)** — the BIP-110 hardfork that split from Bitcoin mainnet at block 961,632 and has run BLAKE2b proof-of-work since block 961,640 (30 Aug 2026).
 
 **Live:** https://xbtclock.online/
 
 ![status](https://img.shields.io/badge/status-live-brightgreen) ![type](https://img.shields.io/badge/type-single--file%20HTML-blue)
 
+<p align="center">
+  <img src="assets/screenshot.png" alt="XBT Clock screenshot" width="800">
+</p>
+
 ---
 
 ## What it shows
 
-- **Center ring** — chain height (large) with blocks-since-fork underneath, subsidy, difficulty adjustment, and time since the last block. The ring itself plots recent blocks around a selectable time window (1h / 6h / 12h / 24h / 7d), colored by how their interval compared to the 600s protocol target — green (on target), amber (slow), red (very slow) — with a "now" dial and a scrub slider to rewind through loaded history.
-- **Corners** — hashrate, coins mined *since the fork* (as a % of what's left to mine post-fork), halving era, live prices from Neoxa (XBT/USDC) and NonKYC (XBT/USDT), market cap (full circulating supply since Bitcoin genesis × price), blocks to halving, the last block's mining pool, local time in a selectable time zone, and average block time / expected next block.
+- **Center ring** — chain height (large) with blocks-since-fork underneath, subsidy, difficulty adjustment, and time since the last block. The ring itself plots recent blocks around a selectable time window (1h / 6h / 12h / 24h / 7d, defaults to 6h), colored by how their interval compared to the 600s protocol target — green (on target), amber (slow), red (very slow) — with a "now" dial and a scrub slider to rewind through loaded history.
+- **Corners** — hashrate, coins mined *since the fork* (as a % of what's left to mine post-fork), halving era, live prices from Neoxa (XBT/USDC) and NonKYC (XBT/USDT), market cap (full circulating supply since Bitcoin genesis × price), blocks to halving, the last block's mining pool, local time in a selectable time zone (searchable, grouped by region), and average block time / expected next block.
 - **Since Last Block** — an elapsed timer plus a feed of the most recent blocks with pool, size, and tx count.
 - **Miner Propagation Report** — pool/coinbase distribution over the last 100 blocks, 1 day, or 1 week, with a proportional bar per miner.
+
+Loaded block history is cached in `localStorage`, so a manual browser refresh doesn't force a full multi-page backfill again — it picks up where it left off and just fetches whatever's new. On phone-width screens the header's subtitle hides itself rather than overlapping the status/timezone/refresh controls.
 
 No build step, no framework, no dependencies — it's one `.html` file. Open it locally or host it anywhere that serves static files.
 
@@ -24,13 +34,12 @@ No build step, no framework, no dependencies — it's one `.html` file. Open it 
 | [mempool.guide](https://mempool.guide) | Chain tip, blocks, difficulty adjustment, hashrate (mempool.space-compatible REST API) | None |
 | [neoxa.exchange](https://neoxa.exchange/api-docs) | XBT/USDC ticker (their API's internal query parameter is `BTCB2_USDC` — a technical quirk, not the ticker) | None |
 | [api.nonkyc.io](https://api.nonkyc.io) | XBT/USDT ticker (internal query parameter `BTCB2_USDT`) | None |
-| [mempool.space](https://mempool.space) | Reference BTC/USD price (optional, currently unused in the UI) | None |
 
-All three primary sources are public/no-auth, but **none of them send permissive CORS headers**, so a browser can't call them directly from a page hosted on a different origin. This project routes every request through a small Cloudflare Worker that fetches server-side and re-adds `Access-Control-Allow-Origin: *`.
+All three sources are public/no-auth, but **none of them send permissive CORS headers**, so a browser can't call them directly from a page hosted on a different origin. This project routes every request through a small Cloudflare Worker that fetches server-side and re-adds `Access-Control-Allow-Origin: *`.
 
 ## Setup
 
-1. **Deploy the CORS proxy.** Create a Cloudflare Worker (free tier is plenty — see [Capacity](#capacity-free-tier) below) with this code:
+1. **Deploy the CORS proxy.** Create a Cloudflare Worker (see [Capacity](#capacity) below for which plan fits) with this code:
 
    ```js
    export default {
@@ -68,11 +77,11 @@ The important constants live in `CONFIG` near the top of the `<script>` block:
 | `TARGET_BLOCK_SECONDS` | 600 — the inherited Bitcoin protocol target, used for the ring's on-target/slow/very-slow coloring |
 | `SUPPLY_CAP` | 21,000,000 — inherited issuance cap |
 | `BLOCK_PAGES_ON_LOAD` / `BLOCK_PAGES_MAX_BACKFILL` | How much block history is fetched on load and how far it'll extend backward to fill longer ring windows (up to 7 days) |
-| `REFRESH_CHAIN_MS` / `REFRESH_MARKET_MS` | Polling intervals (30s / 25s by default) |
+| `REFRESH_CHAIN_MS` / `REFRESH_MARKET_MS` | Polling intervals (5s / 5s by default) |
 
-## Capacity (free tier)
+## Capacity
 
-At the default refresh intervals, one continuously-open tab makes roughly **19,400 requests/day** through the Worker. Cloudflare's free plan caps at 100,000 requests/day, so this comfortably supports a handful of people leaving the page open around the clock — beyond roughly 5 concurrent 24/7 viewers, either lengthen `REFRESH_CHAIN_MS`/`REFRESH_MARKET_MS`, or upgrade to Workers Paid ($5/mo, 10M requests included).
+At the default 5-second refresh intervals, one continuously-open tab makes roughly **104,000 requests/day** through the Worker — that's already past Cloudflare's free-plan cap of 100,000 requests/day with just one viewer. This project runs on **Workers Paid** ($5/mo, 10M requests included), which comfortably covers that. If you'd rather stay on the free plan, lengthen `REFRESH_CHAIN_MS`/`REFRESH_MARKET_MS` (10-15s still feels quite live and cuts the volume by half to two-thirds) instead of upgrading.
 
 ## Notes
 
