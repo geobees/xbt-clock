@@ -460,6 +460,24 @@ let state = {
   selectedTZ: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
 };
 
+// Persist loaded blocks across page reloads (localStorage) so a manual
+// browser refresh doesn't force a full multi-page backfill again — it
+// picks up right where it left off and just fetches whatever's new since.
+const BLOCKS_CACHE_KEY = 'xbtClockBlocks_v1';
+function loadCachedBlocks(){
+  try {
+    const raw = localStorage.getItem(BLOCKS_CACHE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e){ return []; } // corrupt/incompatible cache — fall back to a fresh backfill
+}
+function persistBlocks(){
+  try { localStorage.setItem(BLOCKS_CACHE_KEY, JSON.stringify(state.blocks)); }
+  catch (e){ /* storage full or unavailable (e.g. private browsing) — skip silently */ }
+}
+state.blocks = loadCachedBlocks();
+
 const romanNumerals = ['0','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV'];
 
 // ── Formatters ────────────────────────────────────────────────────────────
@@ -595,6 +613,7 @@ async function fetchTipAndBlocks(){
   // first paint, leaving the rest of the dial empty. Runs after both the
   // initial backfill and incremental refresh, but is a no-op once covered.
   await ensureHistoryCoverage();
+  persistBlocks();
 }
 
 function mapRawBlock(b){
@@ -1142,6 +1161,7 @@ document.getElementById('windowSel').addEventListener('change', async () => {
   render();
   document.getElementById('statusText').textContent = 'loading history…';
   await ensureHistoryCoverage();
+  persistBlocks();
   render();
   document.getElementById('lastUpdated').textContent = 'updated ' + new Date().toLocaleTimeString('en-US',{timeZone:state.selectedTZ});
 });
@@ -1149,6 +1169,7 @@ document.getElementById('propScope').addEventListener('change', async () => {
   renderPropagation();
   if (document.getElementById('propScope').value === 'w'){
     await ensureHistoryCoverage(604800);
+    persistBlocks();
     renderPropagation();
     render();
   }
