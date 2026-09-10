@@ -50,7 +50,7 @@ All three primary sources are public/no-auth, but **none of them send permissive
    };
    ```
 
-2. **Point the clock at it.** In `btcb2_clock.html`, set:
+2. **Point the clock at it.** In `index.html`, set:
 
    ```js
    const PROXY_PREFIX = 'https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev/?url=';
