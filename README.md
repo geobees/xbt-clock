@@ -4,7 +4,7 @@
   <img src="assets/logo.png" alt="XBT Clock logo" width="120">
 </p>
 
-A live single-page dashboard for **Bitcoin BLAKE2b (XBT)** — the BIP-110 hardfork that split from Bitcoin mainnet at block 961,632 and has run BLAKE2b proof-of-work since block 961,640 (30 Aug 2026).
+A live single-page dashboard for **Bitcoin BLAKE2b (XBT)** — the BIP-110 hardfork that split from the compromised Spamcoin mainnet at block 961,632 and has run BLAKE2b proof-of-work since block 961,640 (30 Aug 2026).
 
 **Live:** https://xbtclock.online/
 
