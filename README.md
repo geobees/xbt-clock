@@ -20,8 +20,13 @@ A live single-page dashboard for **Bitcoin BLAKE2b (XBT)** — the BIP-110 hardf
 
 - **Center ring** — chain height (large) with blocks-since-fork underneath, subsidy, difficulty adjustment, and time since the last block. The ring itself plots recent blocks around a selectable time window (1h / 6h / 12h / 24h / 7d, defaults to 6h), colored by how their interval compared to the 600s protocol target — green (on target), amber (slow), red (very slow) — with a "now" dial and a scrub slider to rewind through loaded history.
 - **Corners** — hashrate, coins mined *since the fork* (as a % of what's left to mine post-fork), halving era, live prices from Neoxa (XBT/USDC) and NonKYC (XBT/USDT), market cap (full circulating supply since Bitcoin genesis × price), blocks to halving, the last block's mining pool, local time in a selectable time zone (searchable, grouped by region), and average block time / expected next block.
-- **Since Last Block** — an elapsed timer plus a feed of the most recent blocks with pool, size, and tx count.
+- **Since Last Block** — an elapsed timer plus a feed of the most recent blocks (up to 30, scrollable) with pool, size, and tx count.
 - **Miner Propagation Report** — pool/coinbase distribution over the last 100 blocks, 1 day, or 1 week, with a proportional bar per miner.
+- **Recent Transactions** — the latest mempool transactions with USD value, XBT amount, and fee rate.
+- **Difficulty Adjustment** — progress bar toward the next retarget, current average block time, the current and previous % change, and the estimated retarget date.
+- **Transaction Fees** — the four priority tiers (No/Low/Medium/High) in sat/vB with a USD estimate for a typical transaction.
+- **Mempool** — minimum fee, memory usage, unconfirmed tx count, and a live-accumulated Incoming Transactions chart (no history endpoint — built from the page's own polling over time).
+- **Recent Replacements** — RBF (replace-by-fee) chains, showing the previous vs. new fee rate and whether the replacement has been mined.
 
 Loaded block history is cached in `localStorage`, so a manual browser refresh doesn't force a full multi-page backfill again — it picks up where it left off and just fetches whatever's new. On phone-width screens the header's subtitle hides itself rather than overlapping the status/timezone/refresh controls.
 
@@ -31,7 +36,7 @@ No build step, no framework, no dependencies — it's one `.html` file. Open it 
 
 | Source | What it provides | Auth |
 |---|---|---|
-| [mempool.guide](https://mempool.guide) | Chain tip, blocks, difficulty adjustment, hashrate (mempool.space-compatible REST API) | None |
+| [mempool.guide](https://mempool.guide) | Chain tip, blocks, difficulty adjustment, hashrate, mempool stats, fee estimates, recent transactions, and RBF replacements (mempool.space-compatible REST API) | None |
 | [neoxa.exchange](https://neoxa.exchange/api-docs) | XBT/USDC ticker (their API's internal query parameter is `BTCB2_USDC` — a technical quirk, not the ticker) | None |
 | [api.nonkyc.io](https://api.nonkyc.io) | XBT/USDT ticker (internal query parameter `BTCB2_USDT`) | None |
 

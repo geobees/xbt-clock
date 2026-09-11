@@ -131,7 +131,8 @@
 
   /* ── Scrub bar ── */
   .scrubbar{display:flex;align-items:center;gap:14px;margin-top:16px;padding:12px 18px;
-    background:var(--surface);border:1px solid var(--border);border-radius:12px;}
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    max-width:900px;margin-left:auto;margin-right:auto;}
   .scrub-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);
     font-family:'JetBrains Mono',monospace;flex-shrink:0;white-space:nowrap;}
   input[type=range]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--border2);outline:none;}
@@ -153,14 +154,18 @@
 
   /* ── Since-last-block + Miner Propagation panels ── */
   .panels-row{display:flex;flex-direction:column;gap:16px;}
-  .main-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,440px);gap:20px;align-items:start;}
+  .main-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,380px) minmax(340px,440px);gap:20px;align-items:start;
+    max-width:1760px;margin:0 auto;} /* 900 (ring cap) + 20 + 380 (mempool col cap) + 20 + 440
+    (metrics col cap) — grid claims only as much width as its content actually needs and
+    centers as one block, same reasoning as before but extended for the third column */
   .clock-col{min-width:0;width:100%;}
-  @media(max-width:900px){
+  @media(max-width:1300px){
     .main-layout{grid-template-columns:1fr;}
     .panels-row{margin-top:16px;}
   }
   .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;
     overflow:hidden;display:flex;flex-direction:column;max-height:340px;}
+  .panel-fixed{height:340px;flex-shrink:0;}
   .panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;
     padding:12px 16px;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;
     font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);flex:none;}
@@ -188,12 +193,12 @@
   .prop-note{padding:6px 16px 0;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;
     flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .prop-note.warn{color:var(--warn);}
-  .prop-scroll{overflow-y:auto;min-height:0;flex:1 1 auto;}
+  .prop-scroll{overflow-y:auto;overflow-x:auto;min-height:0;flex:1 1 auto;}
   .prop-table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:11.5px;}
   .prop-table th{position:sticky;top:0;background:var(--surface);font-size:9px;text-transform:uppercase;
-    letter-spacing:1px;color:var(--muted);font-weight:500;text-align:left;padding:8px 16px;
-    border-bottom:1px solid var(--border);}
-  .prop-table td{padding:7px 16px;color:var(--text);border-bottom:1px solid rgba(255,255,255,0.04);position:relative;}
+    letter-spacing:1px;color:var(--muted);font-weight:500;text-align:left;padding:8px 10px;
+    border-bottom:1px solid var(--border);white-space:nowrap;}
+  .prop-table td{padding:7px 10px;color:var(--text);border-bottom:1px solid rgba(255,255,255,0.04);position:relative;}
   .prop-table tr:last-child td{border-bottom:0;}
   .prop-table .r{text-align:right;}
   .prop-table td.r{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;}
@@ -203,6 +208,40 @@
   .prop-name i{width:6px;height:6px;border-radius:50%;flex:none;}
   .prop-pct{color:var(--muted);font-size:9.5px;margin-left:6px;}
   .prop-empty{color:var(--muted)!important;text-align:center;padding:16px 0!important;}
+
+  /* ── Difficulty Adjustment panel ── */
+  .diff-panel{padding:16px;}
+  .diff-bar-track{height:8px;border-radius:4px;background:var(--border2);overflow:hidden;display:flex;}
+  .diff-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:4px 0 0 4px;
+    transition:width 0.4s ease;}
+  .diff-row3{display:flex;justify-content:space-between;gap:10px;margin-top:14px;}
+  .diff-cell{flex:1;min-width:0;}
+  .diff-val{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:15px;}
+  .diff-lab{font-size:9.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  /* ── Transaction Fees panel ── */
+  .fee-tiers{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px;}
+  .fee-tier{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
+  .fee-pill{font-size:9.5px;text-transform:uppercase;letter-spacing:0.6px;color:var(--accent);
+    background:rgba(0,212,170,0.1);border-radius:12px;padding:3px 8px;display:inline-block;margin-bottom:6px;}
+  .fee-rate{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:16px;}
+  .fee-rate span{font-size:10px;color:var(--muted);font-weight:500;}
+  .fee-usd{font-size:10.5px;color:var(--accent);margin-top:2px;font-family:'JetBrains Mono',monospace;}
+
+  /* ── Mempool stats + chart panel ── */
+  .mp-stats{display:flex;justify-content:space-between;padding:16px;border-bottom:1px solid var(--border);}
+  .mp-stat{text-align:center;flex:1;}
+  .mp-lab{font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:3px;}
+  .mp-val{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;}
+  .mp-chart-lab{font-size:9.5px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);
+    padding:10px 16px 0;}
+  .mp-chart{width:100%;height:100px;display:block;}
+
+  /* ── Recent Replacements badges ── */
+  .rbf-badge{display:block;font-size:9px;font-weight:600;text-transform:uppercase;
+    letter-spacing:0.4px;padding:2px 6px;border-radius:4px;margin:2px 0 0 auto;width:fit-content;}
+  .rbf-badge.mined{background:rgba(0,212,170,0.15);color:var(--accent);}
+  .rbf-badge.pending{background:rgba(245,166,35,0.12);color:var(--warn);}
 
   .legend{display:flex;gap:16px;justify-content:center;margin-top:14px;font-size:10.5px;color:var(--muted);
     font-family:'JetBrains Mono',monospace;flex-wrap:wrap;}
@@ -347,8 +386,62 @@
   </div>
     </div>
 
-    <div class="panels-row">
+    <div class="panels-row" id="mempoolCol">
       <div class="panel">
+        <div class="panel-head"><span>Difficulty Adjustment</span></div>
+        <div class="diff-panel">
+          <div class="diff-bar-track"><div class="diff-bar-fill" id="diffBarFill"></div></div>
+          <div class="diff-row3">
+            <div class="diff-cell">
+              <div class="diff-val" id="diffAvgBlock">—</div>
+              <div class="diff-lab">Average block time</div>
+            </div>
+            <div class="diff-cell">
+              <div class="diff-val" id="diffChangePct">—</div>
+              <div class="diff-lab">Previous: <span id="diffPrevPct">—</span></div>
+            </div>
+            <div class="diff-cell">
+              <div class="diff-val" id="diffEta">—</div>
+              <div class="diff-lab" id="diffEtaDate">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>Transaction Fees</span></div>
+        <div class="fee-tiers" id="feeTiers">
+          <div class="fee-tier" data-tier="economyFee"><div class="fee-pill">No Priority</div><div class="fee-rate">— <span>sat/vB</span></div><div class="fee-usd">—</div></div>
+          <div class="fee-tier" data-tier="hourFee"><div class="fee-pill">Low Priority</div><div class="fee-rate">— <span>sat/vB</span></div><div class="fee-usd">—</div></div>
+          <div class="fee-tier" data-tier="halfHourFee"><div class="fee-pill">Medium Priority</div><div class="fee-rate">— <span>sat/vB</span></div><div class="fee-usd">—</div></div>
+          <div class="fee-tier" data-tier="fastestFee"><div class="fee-pill">High Priority</div><div class="fee-rate">— <span>sat/vB</span></div><div class="fee-usd">—</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>Mempool</span></div>
+        <div class="mp-stats">
+          <div class="mp-stat"><div class="mp-lab">Minimum fee</div><div class="mp-val" id="mpMinFee">—</div></div>
+          <div class="mp-stat"><div class="mp-lab">Memory usage</div><div class="mp-val" id="mpMemUsage">—</div></div>
+          <div class="mp-stat"><div class="mp-lab">Unconfirmed</div><div class="mp-val" id="mpUnconfirmed">—</div></div>
+        </div>
+        <div class="mp-chart-lab">Incoming Transactions</div>
+        <canvas id="mpChart" class="mp-chart"></canvas>
+      </div>
+
+      <div class="panel" id="rbfPanel">
+        <div class="panel-head"><span>Recent Replacements</span></div>
+        <div class="prop-scroll">
+          <table class="prop-table">
+            <thead><tr><th>TXID</th><th class="r">Prev (sat/vB)</th><th class="r">New (sat/vB)</th><th class="r">Status</th></tr></thead>
+            <tbody id="rbfBody"><tr><td colspan="4" class="prop-empty">awaiting data</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panels-row">
+      <div class="panel panel-fixed">
       <div class="panel-head"><span>Since last block</span></div>
       <div class="since-block">
         <div class="since-lab">Elapsed</div>
@@ -372,6 +465,16 @@
         <table class="prop-table">
           <thead><tr><th>Miner / Coinbase</th><th class="r">Blocks</th></tr></thead>
           <tbody id="propBody"><tr><td colspan="2" class="prop-empty">awaiting data</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel panel-fixed" id="recentTxPanel">
+      <div class="panel-head"><span>Recent Transactions</span></div>
+      <div class="prop-scroll">
+        <table class="prop-table">
+          <thead><tr><th>TXID</th><th class="r">USD</th><th class="r">Amount</th><th class="r">Fee</th></tr></thead>
+          <tbody id="txBody"><tr><td colspan="4" class="prop-empty">awaiting data</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -440,6 +543,13 @@ const CONFIG = {
                                     // sequentially, so it stays fast
   REFRESH_CHAIN_MS: 5000,
   REFRESH_MARKET_MS: 5000,
+  MEMPOOL_HISTORY_MAX_POINTS: 720, // 1 hour of history at 5s polling — the
+                                     // Incoming Transactions chart is built
+                                     // from our own accumulated polling, not
+                                     // a server-provided history endpoint
+  FEE_REFERENCE_VSIZE: 140, // assumed tx size (vbytes) for converting a
+                              // sat/vB fee rate into a USD estimate — a
+                              // typical simple single-in/single-out transfer
 };
 
 const SOURCES = {
@@ -461,10 +571,15 @@ const PROXY_PREFIX = 'https://btcb2-proxy.txminers.workers.dev/?url=';
 let state = {
   tipHeight: null,
   blocks: [],           // {height, ts, interval, size, txCount, pool}
+  recentTx: [],
   diffAdj: null,
   hashrate: null,
   neoxa: null,
   nonkyc: null,
+  feesRecommended: null,   // {fastestFee, halfHourFee, hourFee, economyFee, minimumFee}
+  mempoolStats: null,      // {count, vsize, usage, maxmempool}
+  mempoolHistory: [],      // [{ts, count}] — our own accumulated buffer, see MEMPOOL_HISTORY_MAX_POINTS
+  replacements: [],        // RBF replacement chains from /api/v1/replacements
   scrubIndex: -1,        // -1 = live (tracks latest)
   selectedTZ: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
 };
@@ -700,6 +815,27 @@ async function fetchDifficulty(){
 async function fetchHashrate(){
   const d = await fetchJSON(SOURCES.mempool + '/v1/mining/hashrate/3d');
   state.hashrate = d && d.currentHashrate != null ? d.currentHashrate : null;
+}
+async function fetchRecentTx(){
+  const d = await fetchJSON(SOURCES.mempool + '/mempool/recent');
+  state.recentTx = Array.isArray(d) ? d : [];
+}
+async function fetchFeesRecommended(){
+  state.feesRecommended = await fetchJSON(SOURCES.mempool + '/v1/fees/recommended');
+}
+async function fetchMempoolStats(){
+  const d = await fetchJSON(SOURCES.mempool + '/mempool');
+  state.mempoolStats = d || null;
+  if (d && typeof d.count === 'number'){
+    state.mempoolHistory.push({ ts: Date.now(), count: d.count });
+    if (state.mempoolHistory.length > CONFIG.MEMPOOL_HISTORY_MAX_POINTS){
+      state.mempoolHistory.splice(0, state.mempoolHistory.length - CONFIG.MEMPOOL_HISTORY_MAX_POINTS);
+    }
+  }
+}
+async function fetchReplacements(){
+  const d = await fetchJSON(SOURCES.mempool + '/v1/replacements');
+  state.replacements = Array.isArray(d) ? d : [];
 }
 async function fetchNeoxa(){
   const d = await fetchJSON(SOURCES.neoxa + '/exchange/ticker/BTCB2_USDC');
@@ -991,10 +1127,8 @@ function render(){
     chgEl.textContent = isFinite(chg) ? fmtPct(chg) + ' 24h' : '—';
     chgEl.className = 'stat-sub ' + (chg >= 0 ? 'up' : 'dn');
   }
-  const prices = [state.neoxa && parseFloat(state.neoxa.lastPrice), state.nonkyc && parseFloat(state.nonkyc.lastPrice)]
-    .filter(p => isFinite(p));
-  if (prices.length){
-    const avgPx = prices.reduce((a,b)=>a+b,0) / prices.length;
+  const avgPx = currentAvgPrice();
+  if (avgPx != null){
     document.getElementById('st-mcap').textContent = fmtUSD(avgPx * supplyAtHeight(asOfHeight));
   }
   const vols = [state.neoxa && parseFloat(state.neoxa.quoteVolume24h), state.nonkyc && parseFloat(state.nonkyc.quoteVolume24h)]
@@ -1030,6 +1164,12 @@ function render(){
   drawRing();
   renderSinceLastBlock();
   renderPropagation();
+  renderRecentTx();
+  renderDifficultyPanel();
+  renderFeeTiers();
+  renderMempoolPanel();
+  renderReplacements();
+  alignRbfPanelHeight();
 }
 
 // ── "Since last block" feed ──────────────────────────────────────────────
@@ -1049,7 +1189,7 @@ function renderSinceLastBlock(){
   }
 
   const list = document.getElementById('feedList');
-  const recent = state.blocks.slice(-4).reverse();
+  const recent = state.blocks.slice(-30).reverse();
   list.innerHTML = recent.map(b => {
     const name = b.pool || 'Unknown';
     const color = poolColor(name);
@@ -1116,6 +1256,171 @@ function renderPropagation(){
   noteEl.classList.toggle('warn', short);
 }
 
+// ── Recent Transactions ───────────────────────────────────────────────────
+function currentAvgPrice(){
+  const prices = [state.neoxa && parseFloat(state.neoxa.lastPrice), state.nonkyc && parseFloat(state.nonkyc.lastPrice)]
+    .filter(p => isFinite(p));
+  return prices.length ? prices.reduce((a,b)=>a+b,0) / prices.length : null;
+}
+function renderRecentTx(){
+  const body = document.getElementById('txBody');
+  if (!state.recentTx.length){
+    body.innerHTML = '<tr><td colspan="4" class="prop-empty">awaiting data</td></tr>';
+    return;
+  }
+  const avgPx = currentAvgPrice();
+  body.innerHTML = state.recentTx.slice(0, 30).map(tx => {
+    const txid = tx.txid || '';
+    const short = txid.length > 10 ? txid.slice(0,5) + '…' + txid.slice(-5) : txid;
+    const amountXBT = (tx.value || 0) / 1e8;
+    const usd = avgPx != null ? '$' + (amountXBT*avgPx).toLocaleString('en-US',{maximumFractionDigits:2}) : '—';
+    const feeRate = tx.vsize ? (tx.fee / tx.vsize) : null;
+    return `<tr><td><span class="prop-name" style="cursor:default">${short}</span></td>`+
+           `<td class="r">${usd}</td>`+
+           `<td class="r">${amountXBT.toFixed(amountXBT < 1 ? 4 : 2)} XBT</td>`+
+           `<td class="r">${feeRate != null ? feeRate.toFixed(2) + ' sat/vB' : '—'}</td></tr>`;
+  }).join('');
+}
+
+// ── Difficulty Adjustment panel ──────────────────────────────────────────
+function renderDifficultyPanel(){
+  const d = state.diffAdj;
+  if (!d) return;
+  const pct = typeof d.progressPercent === 'number' ? d.progressPercent : 0;
+  document.getElementById('diffBarFill').style.width = Math.min(100, Math.max(0, pct)) + '%';
+
+  if (typeof d.timeAvg === 'number'){
+    document.getElementById('diffAvgBlock').textContent = '~' + (d.timeAvg/60000).toFixed(1) + ' minutes';
+  }
+  const chg = d.difficultyChange;
+  const chgEl = document.getElementById('diffChangePct');
+  if (typeof chg === 'number'){
+    chgEl.textContent = fmtPct(chg);
+    chgEl.style.color = chg >= 0 ? 'var(--accent)' : 'var(--danger)';
+  }
+  const prevEl = document.getElementById('diffPrevPct');
+  if (typeof d.previousRetarget === 'number') prevEl.textContent = fmtPct(d.previousRetarget);
+
+  if (typeof d.remainingTime === 'number'){
+    const days = d.remainingTime / 86400;
+    document.getElementById('diffEta').textContent = days >= 1 ? 'In ~' + Math.round(days) + 'd' : 'In ~' + Math.round(d.remainingTime/3600) + 'h';
+  }
+  if (d.estimatedRetargetDate){
+    const ms = d.estimatedRetargetDate > 1e12 ? d.estimatedRetargetDate : d.estimatedRetargetDate * 1000;
+    document.getElementById('diffEtaDate').textContent = new Date(ms).toLocaleString('en-US',{
+      timeZone: state.selectedTZ, month:'short', day:'numeric', hour:'numeric', minute:'2-digit',
+    });
+  }
+}
+
+// ── Transaction Fees panel ────────────────────────────────────────────────
+function renderFeeTiers(){
+  const f = state.feesRecommended;
+  const avgPx = currentAvgPrice();
+  document.querySelectorAll('#feeTiers .fee-tier').forEach(el => {
+    const key = el.dataset.tier;
+    const rate = f && typeof f[key] === 'number' ? f[key] : null;
+    el.querySelector('.fee-rate').innerHTML = (rate != null ? rate : '—') + ' <span>sat/vB</span>';
+    const usdEl = el.querySelector('.fee-usd');
+    if (rate != null && avgPx != null){
+      const usd = (rate * CONFIG.FEE_REFERENCE_VSIZE / 1e8) * avgPx;
+      usdEl.textContent = '$' + usd.toLocaleString('en-US',{maximumFractionDigits: usd < 1 ? 4 : 2});
+    } else {
+      usdEl.textContent = '—';
+    }
+  });
+}
+
+// ── Mempool stats + Incoming Transactions chart ──────────────────────────
+function renderMempoolPanel(){
+  const f = state.feesRecommended, m = state.mempoolStats;
+  document.getElementById('mpMinFee').textContent = f && typeof f.minimumFee === 'number' ? f.minimumFee.toFixed(2) + ' sat/vB' : '—';
+  document.getElementById('mpUnconfirmed').textContent = m && typeof m.count === 'number' ? fmtN(m.count) + ' TXs' : '—';
+  // "usage"/"maxmempool" aren't guaranteed on every mempool.space-style
+  // deployment (unlike count/vsize) — degrades to "—" if not present rather
+  // than guessing a value.
+  const memEl = document.getElementById('mpMemUsage');
+  if (m && typeof m.usage === 'number' && typeof m.maxmempool === 'number'){
+    memEl.textContent = fmtBytes(m.usage) + ' / ' + fmtBytes(m.maxmempool);
+  } else {
+    memEl.textContent = '—';
+  }
+  drawMempoolChart();
+}
+function drawMempoolChart(){
+  const canvas = document.getElementById('mpChart');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth, h = canvas.clientHeight || 100;
+  if (canvas.width !== w*dpr || canvas.height !== h*dpr){
+    canvas.width = w*dpr; canvas.height = h*dpr;
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  const hist = state.mempoolHistory;
+  if (hist.length < 2) return;
+  const counts = hist.map(p => p.count);
+  const min = Math.min(...counts), max = Math.max(...counts, min+1);
+  const pad = 6;
+  ctx.beginPath();
+  hist.forEach((p,i) => {
+    const x = pad + (i/(hist.length-1)) * (w - pad*2);
+    const y = h - pad - ((p.count-min)/(max-min)) * (h - pad*2);
+    i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle = '#00d4aa';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+}
+
+// ── Recent Replacements (RBF) ─────────────────────────────────────────────
+function renderReplacements(){
+  const body = document.getElementById('rbfBody');
+  if (!state.replacements.length){
+    body.innerHTML = '<tr><td colspan="4" class="prop-empty">awaiting data</td></tr>';
+    return;
+  }
+  body.innerHTML = state.replacements.slice(0, 30).map(item => {
+    const tx = item.tx || {};
+    const prior = (item.replaces && item.replaces[0] && item.replaces[0].tx) || null;
+    const txid = tx.txid || '';
+    const short = txid.length > 10 ? txid.slice(0,5) + '…' + txid.slice(-5) : txid;
+    const newRate = typeof tx.rate === 'number' ? tx.rate : (tx.vsize ? tx.fee/tx.vsize : null);
+    const prevRate = prior ? (typeof prior.rate === 'number' ? prior.rate : (prior.vsize ? prior.fee/prior.vsize : null)) : null;
+    // Every row here is already an RBF replacement by definition of being in
+    // this table, so the "RBF" badge was pure redundant width — only the
+    // Mined/Pending distinction is actually new information.
+    const status = tx.mined ? '<span class="rbf-badge mined">Mined</span>' : '<span class="rbf-badge pending">Pending</span>';
+    return `<tr><td><span class="prop-name" style="cursor:default">${short}</span></td>`+
+           `<td class="r">${prevRate != null ? prevRate.toFixed(2) : '—'}</td>`+
+           `<td class="r">${newRate != null ? newRate.toFixed(2) : '—'}</td>`+
+           `<td class="r">${status}</td></tr>`;
+  }).join('');
+}
+
+// Measures where "Recent Transactions" actually ends on screen and sets
+// "Recent Replacements" to exactly that height, so their bottoms match
+// regardless of how tall the (different) panels above each of them happen
+// to be — a pure-CSS approach can't solve this when what's above differs,
+// since fixed/flex heights alone can't account for a different starting
+// Y-position. Only meaningful in the 3-column desktop layout; below that
+// breakpoint the columns stack and natural sizing is fine.
+function alignRbfPanelHeight(){
+  const rbf = document.getElementById('rbfPanel');
+  const recentTx = document.getElementById('recentTxPanel');
+  if (!rbf || !recentTx) return;
+  if (window.innerWidth <= 1300){
+    rbf.style.height = '';
+    rbf.style.maxHeight = '';
+    return;
+  }
+  const rbfTop = rbf.getBoundingClientRect().top;
+  const txBottom = recentTx.getBoundingClientRect().bottom;
+  const target = Math.max(200, Math.round(txBottom - rbfTop));
+  rbf.style.height = target + 'px';
+  rbf.style.maxHeight = target + 'px';
+}
+
 // ── Scrub slider ──────────────────────────────────────────────────────────
 function initScrub(){
   const slider = document.getElementById('scrubSlider');
@@ -1149,6 +1454,14 @@ async function refreshChain(){
   catch (e){ setAlert('diff', 'Difficulty-adjustment endpoint failed.', 'warn'); }
   try { await fetchHashrate(); setAlert('hash', null); }
   catch (e){ setAlert('hash', 'Hashrate endpoint failed.', 'warn'); }
+  try { await fetchRecentTx(); setAlert('recenttx', null); }
+  catch (e){ setAlert('recenttx', 'Recent transactions endpoint failed.', 'warn'); }
+  try { await fetchFeesRecommended(); setAlert('fees', null); }
+  catch (e){ setAlert('fees', 'Fee estimate endpoint failed.', 'warn'); }
+  try { await fetchMempoolStats(); setAlert('mempoolstats', null); }
+  catch (e){ setAlert('mempoolstats', 'Mempool stats endpoint failed.', 'warn'); }
+  try { await fetchReplacements(); setAlert('rbf', null); }
+  catch (e){ setAlert('rbf', 'Replacements endpoint failed.', 'warn'); }
   render();
   document.getElementById('lastUpdated').textContent = 'updated ' + new Date().toLocaleTimeString('en-US',{timeZone:state.selectedTZ});
 }
@@ -1184,7 +1497,7 @@ document.getElementById('propScope').addEventListener('change', async () => {
   }
 });
 document.getElementById('refreshBtn').addEventListener('click', () => spinRefreshBtn(async ()=>{ await refreshChain(); await refreshMarket(); }));
-window.addEventListener('resize', () => { if (state.blocks.length) drawRing(); });
+window.addEventListener('resize', () => { if (state.blocks.length) drawRing(); drawMempoolChart(); alignRbfPanelHeight(); });
 
 // ── Time zone selector ───────────────────────────────────────────────────
 const TZ_GROUPS = [
