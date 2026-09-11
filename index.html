@@ -1302,8 +1302,14 @@ function renderDifficultyPanel(){
   if (typeof d.previousRetarget === 'number') prevEl.textContent = fmtPct(d.previousRetarget);
 
   if (typeof d.remainingTime === 'number'){
-    const days = d.remainingTime / 86400;
-    document.getElementById('diffEta').textContent = days >= 1 ? 'In ~' + Math.round(days) + 'd' : 'In ~' + Math.round(d.remainingTime/3600) + 'h';
+    // Same endpoint's timeAvg field is confirmed to be in milliseconds
+    // (matches the reference "~3.8 minutes" reading exactly when divided by
+    // 60000) — remainingTime is the same kind of duration field, so it's
+    // milliseconds too, not seconds as the generic mempool.space docs
+    // suggested. Treating it as seconds was inflating the ETA by ~1000x.
+    const totalMs = d.remainingTime;
+    const days = totalMs / 86400000;
+    document.getElementById('diffEta').textContent = days >= 1 ? 'In ~' + Math.round(days) + 'd' : 'In ~' + Math.round(totalMs/3600000) + 'h';
   }
   if (d.estimatedRetargetDate){
     const ms = d.estimatedRetargetDate > 1e12 ? d.estimatedRetargetDate : d.estimatedRetargetDate * 1000;
