@@ -582,6 +582,7 @@ let state = {
   recentTx: [],
   diffAdj: null,
   hashrate: null,
+  currentDifficulty: null,
   neoxa: null,
   nonkyc: null,
   feesRecommended: null,   // {fastestFee, halfHourFee, hourFee, economyFee, minimumFee}
@@ -831,6 +832,7 @@ async function fetchDifficulty(){
 async function fetchHashrate(){
   const d = await fetchJSON(SOURCES.mempool + '/v1/mining/hashrate/3d');
   state.hashrate = d && d.currentHashrate != null ? d.currentHashrate : null;
+  state.currentDifficulty = d && d.currentDifficulty != null ? d.currentDifficulty : null;
 }
 async function fetchRecentTx(){
   const d = await fetchJSON(SOURCES.mempool + '/mempool/recent');
@@ -1116,7 +1118,7 @@ function render(){
 
   // Top-left: hashrate / post-fork supply / era
   document.getElementById('st-hashrate').textContent = isLive ? fmtHashrate(state.hashrate) : '—';
-  document.getElementById('st-difficulty').textContent = lastBlock ? fmtDifficulty(lastBlock.difficulty) : '—';
+  document.getElementById('st-difficulty').textContent = isLive ? fmtDifficulty(state.currentDifficulty) : '—';
   // "Supply" here is coins mined SINCE the BLAKE2b fork only — the pre-fork
   // supply was inherited from Bitcoin, not mined on this chain. Expressed as
   // a share of however much is still left to mine post-fork (a constant,
