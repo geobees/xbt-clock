@@ -4,7 +4,7 @@
   <img src="assets/logo.png" alt="XBT Clock logo" width="120">
 </p>
 
-A live single-page dashboard for **Bitcoin BLAKE2b (XBT)** — the BIP-110 hardfork that split from the compromised Spamcoin mainnet at block 961,632 and has run BLAKE2b proof-of-work since block 961,640 (30 Aug 2026).
+A live single-page dashboard for **Bitcoin BLAKE2b (XBT)** — the BIP-110 hardfork that split from Bitcoin mainnet at block 961,632 and has run BLAKE2b proof-of-work since block 961,640 (30 Aug 2026).
 
 **Live:** https://xbtclock.online/
 
@@ -18,8 +18,9 @@ A live single-page dashboard for **Bitcoin BLAKE2b (XBT)** — the BIP-110 hardf
 
 ## What it shows
 
-- **Center ring** — chain height (large) with blocks-since-fork underneath, subsidy, difficulty adjustment, and time since the last block. The ring itself plots recent blocks around a selectable time window (1h / 6h / 12h / 24h / 7d, defaults to 6h), colored by how their interval compared to the 600s protocol target — green (on target), amber (slow), red (very slow) — with a "now" dial and a scrub slider to rewind through loaded history.
-- **Corners** — hashrate, coins mined *since the fork* (as a % of what's left to mine post-fork), halving era, live prices from Neoxa (XBT/USDC) and NonKYC (XBT/USDT), market cap (full circulating supply since Bitcoin genesis × price), blocks to halving, the last block's mining pool, local time in a selectable time zone (searchable, grouped by region), and average block time / expected next block.
+- **Center ring** — chain height (large) with blocks-since-fork underneath, subsidy, difficulty adjustment, time since the last block, the last block's mining pool, and a "Next Adjust" line (difficulty % change with an up/down arrow, colored green/red, plus the estimated retarget date). The ring itself plots recent blocks around a selectable time window (1h / 6h / 12h / 24h / 7d, defaults to 6h), colored by how their interval compared to the 600s protocol target — green (on target), amber (slow), red (very slow) — with a "now" dial and a scrub slider to rewind through loaded history.
+- **Corners** — hashrate, current difficulty, coins mined *since the fork* (as a % of what's left to mine post-fork), halving era, live prices from Neoxa (XBT/USDC) and NonKYC (XBT/USDT), market cap (full circulating supply since Bitcoin genesis × price), blocks to halving, actual vs. expected blocks mined in the last 24 hours, local time in a selectable time zone (searchable, grouped by region), and average block time / expected next block.
+- **Sound** — an optional chime (or tick/blip/thump) plays when a new block lands, synthesized with WebAudio rather than shipped as audio files. Toggle/volume in the header, preference remembered across visits.
 - **Since Last Block** — an elapsed timer plus a feed of the most recent blocks (up to 30, scrollable) with pool, size, and tx count.
 - **Miner Propagation Report** — pool/coinbase distribution over the last 100 blocks, 1 day, or 1 week, with a proportional bar per miner.
 - **Recent Transactions** — the latest mempool transactions with USD value, XBT amount, and fee rate.
@@ -90,6 +91,7 @@ At the default 5-second refresh intervals, one continuously-open tab makes rough
 
 ## Notes
 
+- This chain does **not** reset to a fresh genesis like some other forks do — it inherits Bitcoin's full pre-fork history, so block height continues from real Bitcoin mainnet numbering (~970,000+) rather than starting over at 0.
 - The "Mined post-fork" stat and market cap are deliberately different numbers: post-fork supply excludes everything inherited from before the fork, while market cap values the full circulating supply since true genesis, since every coin on the chain is spendable regardless of which side of the fork it was mined on.
 - API endpoint field names for NonKYC were reverse-engineered against their public v2 market endpoint rather than sourced from published docs — if their schema changes, that fetch degrades gracefully to `—` rather than breaking the page.
 
