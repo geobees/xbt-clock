@@ -49,6 +49,14 @@
   }
 
   /* ── Time zone selector ── */
+  /* ── Sound control ── */
+  .sound-control{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;
+    border:1px solid var(--border2);background:var(--surface2);}
+  .sound-label{font-size:11px;color:var(--muted);white-space:nowrap;}
+  .sound-control select{background:transparent;border:none;color:var(--text);font-size:12px;
+    font-family:'Space Grotesk',sans-serif;cursor:pointer;outline:none;}
+  .sound-control select option{background:var(--surface2);color:var(--text);}
+  .sound-control input[type=range]{width:56px;height:3px;}
   .tz-control{position:relative;}
   .tz-trigger{display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:8px;
     border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:12px;
@@ -122,7 +130,11 @@
   .center-metrics{display:flex;gap:18px;justify-content:center;margin-top:14px;pointer-events:none;}
   .center-pool{margin-top:8px;text-align:center;pointer-events:none;font-family:'JetBrains Mono',monospace;}
   .center-pool .l{font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);}
-  .center-pool .v{font-size:13px;font-weight:600;color:var(--text);margin-left:4px;}
+  .center-pool .v{font-size:15px;font-weight:600;color:var(--warn);margin-left:4px;}
+  .center-next{margin-top:10px;text-align:center;pointer-events:none;font-family:'JetBrains Mono',monospace;}
+  .center-next .l{font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);}
+  .center-next .v{font-size:16px;font-weight:700;margin-top:2px;}
+  .center-next .d{font-size:10px;color:var(--muted);margin-top:1px;}
   .cm{text-align:center;}
   .cm .l{font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:2px;}
   .cm .v{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;}
@@ -276,6 +288,17 @@
           <div class="tz-list" id="tzList"></div>
         </div>
       </div>
+      <div class="sound-control" id="soundControl" title="Sound played when a new block is detected">
+        <span class="sound-label">Sound</span>
+        <select id="soundKind" aria-label="Sound played when a new block is detected">
+          <option value="off">Off</option>
+          <option value="tick">Tick</option>
+          <option value="blip">Blip</option>
+          <option value="chime" selected>Chime</option>
+          <option value="thump">Thump</option>
+        </select>
+        <input id="soundVol" type="range" min="0" max="1" step="0.05" value="1" aria-label="Sound volume">
+      </div>
       <div class="refresh-btn" id="refreshBtn" title="Refresh now">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
@@ -349,8 +372,9 @@
         <div class="stat-sub" id="st-halving-sub">—</div>
       </div>
       <div class="stat-block">
-        <div class="stat-label">Last block by</div>
-        <div class="stat-val sm" id="st-pool">—</div>
+        <div class="stat-label">Last 24 hours</div>
+        <div class="stat-val" id="st-24h-blocks">— / —</div>
+        <div class="stat-sub">blocks</div>
       </div>
     </div>
 
@@ -377,6 +401,11 @@
         <div class="cm"><div class="l">Last block</div><div class="v" id="ck-lastblock">—</div></div>
       </div>
       <div class="center-pool"><span class="l">Pool:</span> <span class="v" id="ck-pool">—</span></div>
+      <div class="center-next">
+        <div class="l">Next Adjust</div>
+        <div class="v" id="ck-nextadjust">—</div>
+        <div class="d" id="ck-nextadjust-date">—</div>
+      </div>
     </div>
   </div>
 
@@ -744,6 +773,7 @@ async function fetchTipAndBlocks(){
       // making it fail every subsequent window filter (NaN comparisons
       // are always false) — i.e. the "blocks disappear on refresh" bug.
       state.blocks = finalizeBlocks([...state.blocks, ...fresh.map(mapRawBlock)]);
+      if (fresh.length) playArrival(soundKind); // one cue per batch, not per block
     }
   }
 
@@ -752,7 +782,12 @@ async function fetchTipAndBlocks(){
   // only fills as far back as however much history happened to load on
   // first paint, leaving the rest of the dial empty. Runs after both the
   // initial backfill and incremental refresh, but is a no-op once covered.
-  await ensureHistoryCoverage();
+  // Also floored at 24h regardless of the ring's own selection (which
+  // defaults to 6h), since the "Last 24 hours" blocks stat needs a full
+  // day of history even when the ring itself is showing a shorter window.
+  const windowSelEl = document.getElementById('windowSel');
+  const ringWindowSec = windowSelEl ? parseInt(windowSelEl.value, 10) : 86400;
+  await ensureHistoryCoverage(Math.max(86400, ringWindowSec));
   persistBlocks();
 }
 
@@ -1161,8 +1196,28 @@ function render(){
   document.getElementById('st-halving').textContent = fmtN(nh - asOfHeight);
   const daysOut = ((nh - asOfHeight) * CONFIG.TARGET_BLOCK_SECONDS) / 86400;
   document.getElementById('st-halving-sub').textContent = 'block #' + fmtN(nh) + ' · ~' + Math.round(daysOut) + 'd';
-  if (lastBlock) document.getElementById('st-pool').textContent = lastBlock.pool || 'unknown';
+  // Pool name is already shown in the center-stack "Pool:" line — this
+  // corner used to duplicate it, now replaced with the 24h blocks stat below.
+  const dayBlocks = state.blocks.filter(b => b.ts >= Date.now() - 86400000).length;
+  const expectedDayBlocks = Math.round(86400 / CONFIG.TARGET_BLOCK_SECONDS);
+  document.getElementById('st-24h-blocks').textContent = fmtN(dayBlocks) + ' / ' + fmtN(expectedDayBlocks);
   if (lastBlock) document.getElementById('ck-pool').textContent = lastBlock.pool || 'unknown';
+  if (state.diffAdj){
+    const chg = state.diffAdj.difficultyChange;
+    const nextAdjEl = document.getElementById('ck-nextadjust');
+    if (typeof chg === 'number'){
+      const up = chg >= 0;
+      nextAdjEl.textContent = (up ? '↑' : '↓') + Math.abs(chg).toFixed(2) + '%';
+      nextAdjEl.style.color = up ? 'var(--accent)' : 'var(--danger)';
+    }
+    const dateEl = document.getElementById('ck-nextadjust-date');
+    if (state.diffAdj.estimatedRetargetDate){
+      const ms = state.diffAdj.estimatedRetargetDate > 1e12 ? state.diffAdj.estimatedRetargetDate : state.diffAdj.estimatedRetargetDate * 1000;
+      dateEl.textContent = '~ ' + new Date(ms).toLocaleDateString('en-US',{
+        timeZone: state.selectedTZ, month:'short', day:'numeric', year:'numeric',
+      }).toUpperCase();
+    }
+  }
 
   // Bottom-right: time/date + avg block time
   const now = new Date();
@@ -1627,9 +1682,94 @@ function initTZSelector(){
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTzPanel(); });
 }
 
+// ── New-block arrival sound ─────────────────────────────────────────────
+// Synthesised with WebAudio rather than shipped as audio files, since this
+// is a single self-contained HTML file and base64 samples would bloat it
+// for no gain. Browsers block audio until a user gesture, so the context is
+// created lazily on first interaction and resumed if suspended.
+let audioCtx = null;
+let soundKind = localStorage.getItem('xbtClockSoundKind') || 'chime';
+let soundVol = parseFloat(localStorage.getItem('xbtClockSoundVol'));
+if (!isFinite(soundVol)) soundVol = 1;
+
+let audioUnlocked = false;
+function unlockAudio(){
+  if (audioUnlocked) return;
+  audioUnlocked = true;
+  if (soundKind !== 'off') ensureAudio();
+  removeEventListener('pointerdown', unlockAudio);
+  removeEventListener('keydown', unlockAudio);
+  removeEventListener('wheel', unlockAudio);
+}
+addEventListener('pointerdown', unlockAudio, {passive:true});
+addEventListener('keydown', unlockAudio);
+addEventListener('wheel', unlockAudio, {passive:true});
+
+function ensureAudio(){
+  if (soundKind === 'off') return null;
+  if (!audioCtx){
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    audioCtx = new AC();
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume().catch(()=>{});
+  return audioCtx;
+}
+
+const SOUND_SPECS = {
+  // [waveform, startHz, endHz, seconds, attack, peakGain]
+  tick:  ['square',   1500, 900,  0.055, 0.002, 0.55],
+  blip:  ['sine',      660, 1320, 0.130, 0.004, 0.80],
+  chime: ['triangle',  880,  880, 0.520, 0.010, 0.70],
+  thump: ['sine',      140,   55, 0.300, 0.006, 1.00],
+};
+
+function playArrival(kind){
+  const ctx = ensureAudio();
+  if (!ctx) return;
+  const spec = SOUND_SPECS[kind];
+  if (!spec) return;
+  const [wave, f0, f1, dur, atk, peak] = spec;
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator(), g = ctx.createGain();
+  osc.type = wave;
+  osc.frequency.setValueAtTime(f0, t);
+  if (f1 !== f0) osc.frequency.exponentialRampToValueAtTime(Math.max(20,f1), t+dur);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(Math.max(0.0002, peak*soundVol), t+atk);
+  g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+  osc.connect(g); g.connect(ctx.destination);
+  osc.start(t); osc.stop(t+dur+0.02);
+  if (kind === 'chime'){
+    const o2 = ctx.createOscillator(), g2 = ctx.createGain();
+    o2.type = 'sine'; o2.frequency.setValueAtTime(1320, t);
+    g2.gain.setValueAtTime(0.0001, t);
+    g2.gain.exponentialRampToValueAtTime(Math.max(0.0002, 0.35*soundVol), t+0.012);
+    g2.gain.exponentialRampToValueAtTime(0.0001, t+dur*0.8);
+    o2.connect(g2); g2.connect(ctx.destination);
+    o2.start(t); o2.stop(t+dur);
+  }
+}
+function initSoundControl(){
+  const kindSel = document.getElementById('soundKind');
+  const volSlider = document.getElementById('soundVol');
+  kindSel.value = soundKind;
+  volSlider.value = soundVol;
+  kindSel.addEventListener('change', () => {
+    soundKind = kindSel.value;
+    try { localStorage.setItem('xbtClockSoundKind', soundKind); } catch(e){}
+    if (soundKind !== 'off') ensureAudio();
+  });
+  volSlider.addEventListener('input', () => {
+    soundVol = parseFloat(volSlider.value);
+    try { localStorage.setItem('xbtClockSoundVol', String(soundVol)); } catch(e){}
+  });
+}
+
 initScrub();
 initRingHover();
 initTZSelector();
+initSoundControl();
 refreshChain().then(refreshMarket);
 setInterval(refreshChain, CONFIG.REFRESH_CHAIN_MS);
 setInterval(refreshMarket, CONFIG.REFRESH_MARKET_MS);
