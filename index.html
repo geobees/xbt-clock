@@ -397,7 +397,7 @@
       <div class="center-abs" id="ck-sincefork">— blocks since fork</div>
       <div class="center-metrics">
         <div class="cm"><div class="l">Subsidy</div><div class="v" id="ck-subsidy">—</div></div>
-        <div class="cm"><div class="l">Diff adj</div><div class="v" id="ck-diffadj">—</div></div>
+        <div class="cm"><div class="l">TX Fees</div><div class="v" id="ck-txfees">—</div></div>
         <div class="cm"><div class="l">Last block</div><div class="v" id="ck-lastblock">—</div></div>
       </div>
       <div class="center-pool"><span class="l">Pool:</span> <span class="v" id="ck-pool">—</span></div>
@@ -1135,20 +1135,23 @@ function render(){
   const subsidy = subsidyAt(asOfHeight) / 1e8;
   document.getElementById('ck-subsidy').textContent = subsidy.toFixed(subsidy < 1 ? 4 : 2) + ' XBT';
 
-  if (isLive && state.diffAdj){
-    const dc = state.diffAdj.difficultyChange;
-    const el = document.getElementById('ck-diffadj');
-    el.textContent = fmtPct(dc);
-    el.style.color = dc == null ? '' : (dc >= 0 ? 'var(--accent)' : 'var(--danger)');
-  } else if (!isLive){
-    document.getElementById('ck-diffadj').textContent = '—';
+  const txFeesEl = document.getElementById('ck-txfees');
+  if (state.feesRecommended && typeof state.feesRecommended.halfHourFee === 'number'){
+    txFeesEl.textContent = state.feesRecommended.halfHourFee + ' sat/vB';
+  } else {
+    txFeesEl.textContent = '—';
   }
 
   const lastBlock = state.blocks[state.blocks.length - 1];
+  const lastBlockEl = document.getElementById('ck-lastblock');
   if (isLive && lastBlock){
-    document.getElementById('ck-lastblock').textContent = fmtAgo(lastBlock.ts);
+    const secsAgo = (Date.now() - lastBlock.ts) / 1000;
+    lastBlockEl.textContent = fmtAgo(lastBlock.ts);
+    lastBlockEl.style.color = secsAgo <= CONFIG.TARGET_BLOCK_SECONDS ? 'var(--accent)'
+      : secsAgo <= CONFIG.TARGET_BLOCK_SECONDS * 2 ? 'var(--warn)' : 'var(--danger)';
   } else if (!isLive){
-    document.getElementById('ck-lastblock').textContent = new Date(asOfMs).toLocaleTimeString('en-US',{timeZone:state.selectedTZ});
+    lastBlockEl.textContent = new Date(asOfMs).toLocaleTimeString('en-US',{timeZone:state.selectedTZ});
+    lastBlockEl.style.color = '';
   }
 
   // Top-left: hashrate / post-fork supply / era
