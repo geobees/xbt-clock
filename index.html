@@ -120,6 +120,9 @@
   .center-mid{font-size:11px;color:var(--muted);margin-top:6px;font-family:'JetBrains Mono',monospace;}
   .center-abs{font-size:10px;color:rgba(255,255,255,0.28);margin-top:2px;font-family:'JetBrains Mono',monospace;}
   .center-metrics{display:flex;gap:18px;justify-content:center;margin-top:14px;pointer-events:none;}
+  .center-pool{margin-top:8px;text-align:center;pointer-events:none;font-family:'JetBrains Mono',monospace;}
+  .center-pool .l{font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);}
+  .center-pool .v{font-size:13px;font-weight:600;color:var(--text);margin-left:4px;}
   .cm{text-align:center;}
   .cm .l{font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:2px;}
   .cm .v{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;}
@@ -307,6 +310,10 @@
         <div class="stat-val" id="st-hashrate">—</div>
       </div>
       <div class="stat-block">
+        <div class="stat-label">Difficulty</div>
+        <div class="stat-val sm" id="st-difficulty">—</div>
+      </div>
+      <div class="stat-block">
         <div class="stat-label">Mined post-fork</div>
         <div class="stat-val sm" id="st-supply">—</div>
         <div class="stat-sub" id="st-supply-pct">—</div>
@@ -369,6 +376,7 @@
         <div class="cm"><div class="l">Diff adj</div><div class="v" id="ck-diffadj">—</div></div>
         <div class="cm"><div class="l">Last block</div><div class="v" id="ck-lastblock">—</div></div>
       </div>
+      <div class="center-pool"><span class="l">Pool:</span> <span class="v" id="ck-pool">—</span></div>
     </div>
   </div>
 
@@ -612,6 +620,13 @@ function fmtHashrate(hps){
   while (v >= 1000 && i < units.length - 1) { v /= 1000; i++; }
   return v.toFixed(v < 10 ? 2 : 1) + ' ' + units[i];
 }
+function fmtDifficulty(d){
+  if (d == null || !isFinite(d)) return '—';
+  const units = ['', 'K', 'M', 'G', 'T', 'P'];
+  let i = 0, v = d;
+  while (v >= 1000 && i < units.length - 1) { v /= 1000; i++; }
+  return v.toFixed(v < 10 ? 2 : 1) + (units[i] ? ' ' + units[i] : '');
+}
 function fmtN(n){ return n == null ? '—' : Math.round(n).toLocaleString('en-US'); }
 function fmtSupply(n){
   if (n == null) return '—';
@@ -747,6 +762,7 @@ function mapRawBlock(b){
     size: b.size,
     txCount: b.tx_count,
     pool: (b.extras && b.extras.pool && b.extras.pool.name) ? b.extras.pool.name : null,
+    difficulty: typeof b.difficulty === 'number' ? b.difficulty : null,
   };
 }
 function finalizeBlocks(normalizedArr){
@@ -1100,6 +1116,7 @@ function render(){
 
   // Top-left: hashrate / post-fork supply / era
   document.getElementById('st-hashrate').textContent = isLive ? fmtHashrate(state.hashrate) : '—';
+  document.getElementById('st-difficulty').textContent = lastBlock ? fmtDifficulty(lastBlock.difficulty) : '—';
   // "Supply" here is coins mined SINCE the BLAKE2b fork only — the pre-fork
   // supply was inherited from Bitcoin, not mined on this chain. Expressed as
   // a share of however much is still left to mine post-fork (a constant,
@@ -1108,7 +1125,7 @@ function render(){
   const remainingAtFork = CONFIG.SUPPLY_CAP - supplyAtForkStart;
   const postForkSupply = supplyAtHeight(asOfHeight) - supplyAtForkStart;
   document.getElementById('st-supply').textContent = fmtSupply(postForkSupply) + ' XBT';
-  document.getElementById('st-supply-pct').textContent = ((postForkSupply/remainingAtFork)*100).toFixed(2) + '% of ' + fmtCompact(remainingAtFork) + ' left to mine';
+  document.getElementById('st-supply-pct').textContent = ((postForkSupply/remainingAtFork)*100).toFixed(2) + '% of ' + fmtCompact(remainingAtFork);
   const era = Math.floor(asOfHeight / CONFIG.HALVING_INTERVAL);
   document.getElementById('st-era').textContent = toRoman(era + 1);
 
@@ -1143,6 +1160,7 @@ function render(){
   const daysOut = ((nh - asOfHeight) * CONFIG.TARGET_BLOCK_SECONDS) / 86400;
   document.getElementById('st-halving-sub').textContent = 'block #' + fmtN(nh) + ' · ~' + Math.round(daysOut) + 'd';
   if (lastBlock) document.getElementById('st-pool').textContent = lastBlock.pool || 'unknown';
+  if (lastBlock) document.getElementById('ck-pool').textContent = lastBlock.pool || 'unknown';
 
   // Bottom-right: time/date + avg block time
   const now = new Date();
