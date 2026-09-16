@@ -151,7 +151,7 @@
   .center-metrics{display:flex;gap:18px;justify-content:center;margin-top:14px;pointer-events:none;}
   .center-pool{margin-top:8px;text-align:center;pointer-events:none;font-family:'JetBrains Mono',monospace;}
   .center-pool .l{font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);}
-  .center-pool .v{font-size:15px;font-weight:600;color:var(--warn);margin-left:4px;}
+  .center-pool .v{font-size:15px;font-weight:600;color:var(--warn);margin-top:2px;}
   .center-next{margin-top:10px;text-align:center;pointer-events:none;font-family:'JetBrains Mono',monospace;}
   .center-next .l{font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);}
   .center-next .v{font-size:16px;font-weight:700;margin-top:2px;}
@@ -423,7 +423,10 @@
         <div class="cm"><div class="l">TX Fees</div><div class="v" id="ck-txfees">—</div></div>
         <div class="cm"><div class="l">Last block</div><div class="v" id="ck-lastblock">—</div></div>
       </div>
-      <div class="center-pool"><span class="l">Pool:</span> <span class="v" id="ck-pool">—</span></div>
+      <div class="center-pool">
+        <div class="l">Pool:</div>
+        <div class="v" id="ck-pool">—</div>
+      </div>
       <div class="center-next">
         <div class="l">Next Adjust</div>
         <div class="v" id="ck-nextadjust">—</div>
