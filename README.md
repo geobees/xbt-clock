@@ -1,4 +1,4 @@
-# Bitcoin (XBT) Hybrid Mempool
+# Bitcoin (XBT) Clock + Hybrid Mempool
 
 <p align="center">
   <img src="assets/logo.png" alt="Bitcoin (XBT) Hybrid Mempool logo" width="120">
@@ -21,7 +21,7 @@ A live single-page dashboard for **Bitcoin BLAKE2b (XBT)** — the BIP-110 hardf
 **Latest Blocks** — a horizontal strip of recent blocks at the top of the page, flat cards showing height, fee range, block reward, tx count, age, and mining pool, with a pulsing "pending" card showing live mempool size and estimated time to the next block. Click any card to open a full block-detail modal — height, hash, size/weight, difficulty, pool, fee range, total fees, reward, merkle root — with a **Transactions** tab listing every tx in that block as its own card: timestamp, every input and output address (clickable, with amounts), the coinbase transaction called out distinctly with the block's mining pool name rather than blending in as a plain row, fee/fee-rate/USD, and total output value, with a "show all N remaining" expand for transactions with many inputs or outputs. From there you can drill all the way down: block → transaction → address (balance, total received/sent, tx count) — all off `mempool.guide`'s public REST API, no node required — and a **← Back** button in the modal header (present on every tab) steps back through that trail one level at a time.
 
 - **Center ring** — chain height (large), subsidy, current transaction fee rate, and time since the last block (colored green/amber/red at the same 10/20-minute thresholds as the ring itself), plus the last block's mining pool and a "Next Adjust" line (difficulty % change with an up/down arrow, colored green/red, and the estimated retarget date). The ring itself plots recent blocks around a selectable time window (1h / 6h / 12h / 24h / 7d, defaults to 6h), colored by how their interval compared to the 600s protocol target — green (on target), amber (slow), red (very slow) — with a "now" dial and a scrub slider to rewind through loaded history. When a new block lands, the chain-height number flashes and thin ripples travel outward from center to the ring's edge.
-- **Corners** — hashrate, current difficulty, coins mined *since the fork* (as a % of what's left to mine post-fork), halving era, live prices from Neoxa (XBT/USDC) and NonKYC (XBT/USDT), market cap (full circulating supply since Bitcoin genesis × price), blocks to halving, actual vs. expected blocks mined in the last 24 hours, local time in a selectable time zone (searchable, grouped by region), and average block time / expected next block.
+- **Corners** — hashrate, current difficulty, coins mined _since the fork_ (as a % of what's left to mine post-fork), halving era, live prices from Neoxa (XBT/USDC) and NonKYC (XBT/USDT), market cap (full circulating supply since Bitcoin genesis × price), blocks to halving, actual vs. expected blocks mined in the last 24 hours, local time in a selectable time zone (searchable, grouped by region), and average block time / expected next block.
 - **Sound** — an optional chime (or tick/blip/thump) plays when a new block lands, synthesized with WebAudio rather than shipped as audio files. Toggle/volume in the header, preference remembered across visits.
 - **Since Last Block** — an elapsed timer plus a feed of the most recent blocks (up to 30, scrollable) with pool, size, and tx count.
 - **Miner Propagation Report** — pool/coinbase distribution over the last 100 blocks, 1 day, or 1 week, with a proportional bar per miner.
@@ -37,11 +37,11 @@ No build step, no framework, no dependencies — it's one `.html` file. Open it 
 
 ## Data sources
 
-| Source | What it provides | Auth |
-|---|---|---|
-| [mempool.guide](https://mempool.guide) | Chain tip, blocks, difficulty adjustment, hashrate, mempool stats, fee estimates, recent transactions, RBF replacements, and (for the Latest Blocks modals) individual block/transaction/address lookups — all via the mempool.space-compatible REST API | None |
-| [neoxa.exchange](https://neoxa.exchange/api-docs) | XBT/USDC ticker (their API's internal query parameter is `BTCB2_USDC` — a technical quirk, not the ticker) | None |
-| [api.nonkyc.io](https://api.nonkyc.io) | XBT/USDT ticker (internal query parameter `BTCB2_USDT`) | None |
+| Source                                            | What it provides                                                                                                                                                                                                                                         | Auth |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
+| [mempool.guide](https://mempool.guide)            | Chain tip, blocks, difficulty adjustment, hashrate, mempool stats, fee estimates, recent transactions, RBF replacements, and (for the Latest Blocks modals) individual block/transaction/address lookups — all via the mempool.space-compatible REST API | None |
+| [neoxa.exchange](https://neoxa.exchange/api-docs) | XBT/USDC ticker (their API's internal query parameter is `BTCB2_USDC` — a technical quirk, not the ticker)                                                                                                                                               | None |
+| [api.nonkyc.io](https://api.nonkyc.io)            | XBT/USDT ticker (internal query parameter `BTCB2_USDT`)                                                                                                                                                                                                  | None |
 
 All three sources are public/no-auth, but **none of them send permissive CORS headers**, so a browser can't call them directly from a page hosted on a different origin. This project routes every request through a small Cloudflare Worker that fetches server-side and re-adds `Access-Control-Allow-Origin: *`.
 
@@ -52,15 +52,18 @@ All three sources are public/no-auth, but **none of them send permissive CORS he
    ```js
    export default {
      async fetch(request) {
-       const url = new URL(request.url).searchParams.get('url');
-       if (!url) return new Response('Missing ?url=', { status: 400 });
-       const upstream = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+       const url = new URL(request.url).searchParams.get("url");
+       if (!url) return new Response("Missing ?url=", { status: 400 });
+       const upstream = await fetch(url, {
+         headers: { "User-Agent": "Mozilla/5.0" },
+       });
        const body = await upstream.arrayBuffer();
        return new Response(body, {
          status: upstream.status,
          headers: {
-           'Access-Control-Allow-Origin': '*',
-           'Content-Type': upstream.headers.get('content-type') || 'application/json',
+           "Access-Control-Allow-Origin": "*",
+           "Content-Type":
+             upstream.headers.get("content-type") || "application/json",
          },
        });
      },
@@ -70,7 +73,7 @@ All three sources are public/no-auth, but **none of them send permissive CORS he
 2. **Point the page at it.** In `index.html`, set:
 
    ```js
-   const PROXY_PREFIX = 'https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev/?url=';
+   const PROXY_PREFIX = "https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev/?url=";
    ```
 
 3. **Serve the HTML file.** Any static host works (Netlify, GitHub Pages, Cloudflare Pages, or just open the file locally) — there's nothing to build.
@@ -79,13 +82,13 @@ All three sources are public/no-auth, but **none of them send permissive CORS he
 
 The important constants live in `CONFIG` near the top of the `<script>` block:
 
-| Constant | Meaning |
-|---|---|
-| `FORK_HEIGHT` | 961640 — the clock's "zero point" (BLAKE2b activation), not true Bitcoin genesis |
-| `TARGET_BLOCK_SECONDS` | 600 — the inherited Bitcoin protocol target, used for the ring's on-target/slow/very-slow coloring |
-| `SUPPLY_CAP` | 21,000,000 — inherited issuance cap |
+| Constant                                           | Meaning                                                                                                                |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `FORK_HEIGHT`                                      | 961640 — the clock's "zero point" (BLAKE2b activation), not true Bitcoin genesis                                       |
+| `TARGET_BLOCK_SECONDS`                             | 600 — the inherited Bitcoin protocol target, used for the ring's on-target/slow/very-slow coloring                     |
+| `SUPPLY_CAP`                                       | 21,000,000 — inherited issuance cap                                                                                    |
 | `BLOCK_PAGES_ON_LOAD` / `BLOCK_PAGES_MAX_BACKFILL` | How much block history is fetched on load and how far it'll extend backward to fill longer ring windows (up to 7 days) |
-| `REFRESH_CHAIN_MS` / `REFRESH_MARKET_MS` | Polling intervals (5s / 5s by default) |
+| `REFRESH_CHAIN_MS` / `REFRESH_MARKET_MS`           | Polling intervals (5s / 5s by default)                                                                                 |
 
 The Latest Blocks strip renders off the same `state.blocks` array the ring uses (capped to the most recent 150 cards) — it doesn't make any extra requests of its own. Opening a modal (block/transaction/address) does fetch on demand, only when you click something.
 
