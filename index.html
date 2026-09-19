@@ -916,19 +916,26 @@ async function fetchTipAndBlocks(){
   state.tipHeight = tip;
 
   // Only do the expensive multi-page block backfill once; after that,
-  // just prepend newly-seen blocks on refresh.
+  // just prepend newly-seen blocks on refresh. Fetched as concurrent
+  // batches (stepping back by an assumed 10 blocks/page from the known
+  // tip) rather than one page at a time — sequential awaits here were the
+  // actual cause of the slow initial load; dedup in finalizeBlocks()
+  // absorbs the minor overlaps this approximation can produce.
   if (state.blocks.length === 0){
-    let startHeight = tip;
-    const collected = [];
-    for (let p = 0; p < CONFIG.BLOCK_PAGES_ON_LOAD; p++){
-      const page = await fetchJSON(SOURCES.mempool + '/v1/blocks/' + startHeight);
-      if (!Array.isArray(page) || page.length === 0) break;
-      collected.push(...page);
-      const minHeight = Math.min(...page.map(b => b.height));
-      if (minHeight <= CONFIG.FORK_HEIGHT) break;
-      startHeight = minHeight - 1;
+    const BATCH = 12;
+    const heights = [];
+    let cursor = tip;
+    for (let p = 0; p < CONFIG.BLOCK_PAGES_ON_LOAD && cursor > CONFIG.FORK_HEIGHT; p++){
+      heights.push(cursor);
+      cursor -= 10;
     }
-    state.blocks = finalizeBlocks(collected.map(mapRawBlock));
+    const collected = [];
+    for (let i = 0; i < heights.length; i += BATCH){
+      const batch = heights.slice(i, i + BATCH);
+      const results = await Promise.allSettled(batch.map(h => fetchJSON(SOURCES.mempool + '/v1/blocks/' + h)));
+      results.forEach(r => { if (r.status === 'fulfilled' && Array.isArray(r.value)) collected.push(...r.value); });
+    }
+    state.blocks = finalizeBlocks(collected.filter(b => b.height > CONFIG.FORK_HEIGHT).map(mapRawBlock));
   } else if (tip > state.blocks[state.blocks.length - 1].height){
     const page = await fetchJSON(SOURCES.mempool + '/v1/blocks/' + tip);
     if (Array.isArray(page)){
