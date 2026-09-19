@@ -305,12 +305,15 @@
 
   /* ── Since-last-block + Miner Propagation panels ── */
   .panels-row{display:flex;flex-direction:column;gap:16px;}
-  .main-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,380px) minmax(340px,440px);gap:20px;align-items:start;
+  .main-layout{display:grid;grid-template-columns:minmax(480px,1fr) minmax(300px,380px) minmax(340px,440px);gap:20px;align-items:start;
     max-width:1760px;margin:0 auto;} /* 900 (ring cap) + 20 + 380 (mempool col cap) + 20 + 440
     (metrics col cap) — grid claims only as much width as its content actually needs and
-    centers as one block, same reasoning as before but extended for the third column */
+    centers as one block, same reasoning as before but extended for the third column.
+    The ring column's 480px floor is a hard backstop — it should never actually bind
+    given the breakpoint below, but guarantees the ring can't be squeezed illegibly
+    small even right at that edge. */
   .clock-col{min-width:0;width:100%;}
-  @media(max-width:1300px){
+  @media(max-width:1650px){
     .main-layout{grid-template-columns:1fr;}
     .panels-row{margin-top:16px;}
   }
