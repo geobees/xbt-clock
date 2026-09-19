@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XBT Clock — Bitcoin BLAKE2b</title>
+<title>Bitcoin (XBT) Hybrid Mempool - BIP-110</title>
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,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">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -72,6 +72,121 @@
     font-family:'Space Grotesk',sans-serif;cursor:pointer;outline:none;}
   .sound-control select option{background:var(--surface2);color:var(--text);}
   .sound-control input[type=range]{width:56px;height:3px;}
+
+  /* ═══ Latest Blocks (adapted from KV5's latest-blocks strip; cards sized
+     15% down from the original 127×164) ═══ */
+  .bp-wrap{position:relative;margin-bottom:20px;}
+  .bp-scroll{display:flex;gap:14px;overflow-x:auto;padding:16px 8px 16px 12px;
+    scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent;
+    overscroll-behavior-x:contain;height:189px;align-items:flex-start;}
+  .bp-scroll::-webkit-scrollbar{height:4px;}
+  .bp-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+
+  @keyframes bp-pulse{
+    0%,100%{background:rgba(245,140,35,.08);border-color:rgba(245,140,35,.4);}
+    50%{background:rgba(245,140,35,.16);border-color:rgba(255,170,60,.75);}
+  }
+  .bp-pending{flex-shrink:0;width:108px;height:139px;border:1px dashed rgba(245,140,35,.55);
+    border-radius:9px;padding:9px;cursor:default;position:relative;overflow:hidden;
+    animation:bp-pulse 2.4s ease-in-out infinite;}
+
+  .bp-block{flex-shrink:0;width:108px;height:139px;background:var(--surface2);
+    border:1px solid var(--border2);border-radius:9px;
+    padding:9px 9px 14px 9px;cursor:pointer;position:relative;margin-top:14px;margin-right:12px;
+    transition:border-color .2s ease,background .2s ease;}
+  .bp-block:hover{background:var(--surface);border-color:rgba(0,212,170,.5);}
+
+  @keyframes bp-morph{
+    0%{background:rgba(255,165,55,.22);border-color:rgba(255,170,60,.8);}
+    100%{background:var(--surface2);border-color:var(--border2);}
+  }
+  @keyframes bp-pending-in{from{opacity:0;transform:translateX(-26px) scale(.92);}to{opacity:1;transform:translateX(0) scale(1);}}
+  .bp-block.morphing{animation:bp-morph 0.6s ease-out forwards;}
+  .bp-pending.entering{animation:bp-pending-in 0.5s ease-out forwards;}
+
+  .bp-height{font-size:14px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent);margin-bottom:5px;}
+  .bp-pending-lbl{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#f5a623;opacity:.9;margin-bottom:4px;}
+  .bp-fee-bar{height:3px;border-radius:2px;margin-bottom:5px;
+    background:linear-gradient(90deg,rgba(0,212,170,.6),rgba(245,166,35,.8));box-shadow:0 1px 3px rgba(0,212,170,.3);}
+  .bp-fee-txt{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);margin-bottom:7px;line-height:1.3;}
+  .bp-fee-range{color:var(--accent2);font-size:8px;}
+  .bp-value-line{display:flex;align-items:baseline;gap:3px;margin-bottom:2px;}
+  .bp-value{font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text);white-space:nowrap;}
+  .bp-value-unit{font-size:8px;color:var(--muted);white-space:nowrap;}
+  .bp-meta-line{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text);margin-top:5px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .bp-age{color:var(--muted);}
+  .bp-pool{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent2);margin-top:5px;
+    display:flex;align-items:center;gap:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .bp-pool-dot{width:7px;height:7px;border-radius:50%;background:var(--accent2);flex-shrink:0;}
+  .bp-size-bar{position:absolute;bottom:0;left:0;right:0;height:9px;border-radius:0 0 7px 7px;background:rgba(255,255,255,.06);}
+  .bp-size-fill{height:100%;border-radius:0 0 7px 7px;background:rgba(255,255,255,.18);transition:width .3s;}
+  .bp-nav{display:flex;align-items:center;justify-content:space-between;margin-top:6px;gap:6px;flex-wrap:wrap;}
+  .bp-nav-btn{background:var(--surface2);border:1px solid var(--border2);color:var(--muted);
+    border-radius:6px;padding:4px 9px;font-size:10px;font-family:'JetBrains Mono',monospace;cursor:pointer;}
+  .bp-nav-btn:hover{color:var(--text);border-color:rgba(0,153,255,.4);}
+  .bp-status{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);flex:1;text-align:center;}
+
+  /* ── Block detail modal ── */
+  .bp-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;
+    align-items:center;justify-content:center;padding:20px;}
+  .bp-modal-bg.open{display:flex;}
+  .bp-modal{background:#0d1520;border:1px solid var(--border2);border-radius:14px;max-width:640px;
+    width:100%;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;
+    box-shadow:0 24px 64px rgba(0,0,0,.6);}
+  .bp-modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;
+    border-bottom:1px solid var(--border);flex:none;}
+  .bp-modal-title{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:15px;}
+  .bp-modal-close{background:transparent;border:1px solid var(--border2);color:var(--muted);
+    border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:16px;line-height:1;}
+  .bp-modal-close:hover{color:var(--text);}
+  .bp-modal-back{background:transparent;border:1px solid var(--border2);color:var(--muted);
+    border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:15px;line-height:1;flex-shrink:0;}
+  .bp-modal-back:hover{color:var(--accent2);border-color:rgba(0,153,255,.4);}
+  .bp-modal-tabs{display:flex;gap:6px;padding:10px 20px 0;flex:none;}
+  .bp-modal-tab{background:transparent;border:none;color:var(--muted);font-size:11px;
+    font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.6px;
+    padding:8px 4px;cursor:pointer;border-bottom:2px solid transparent;}
+  .bp-modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .bp-modal-body{overflow-y:auto;padding:16px 20px 20px;}
+  .bp-modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;}
+  .bp-modal-field{padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+  .bp-modal-field .l{font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:3px;}
+  .bp-modal-field .v{font-size:12.5px;font-family:'JetBrains Mono',monospace;color:var(--text);word-break:break-all;}
+  .bp-modal-raw{background:#080c10;border:1px solid var(--border);border-radius:8px;padding:12px;
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);white-space:pre-wrap;
+    word-break:break-all;max-height:400px;overflow-y:auto;}
+  .bp-modal-loading,.bp-modal-error{padding:40px 20px;text-align:center;color:var(--muted);
+    font-family:'JetBrains Mono',monospace;font-size:12px;}
+  .bp-io-section-lab{font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin:14px 0 4px;}
+  .bp-io-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;
+    border-bottom:1px solid rgba(255,255,255,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;}
+  .bp-io-addr{color:var(--accent2);cursor:pointer;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap;max-width:260px;}
+  .bp-io-addr:hover{text-decoration:underline;}
+  .bp-io-val{color:var(--text);white-space:nowrap;flex-shrink:0;}
+  .bp-tx-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;
+    border-bottom:1px solid rgba(255,255,255,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;}
+  .bp-tx-row .txid{color:var(--accent2);cursor:pointer;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap;max-width:240px;}
+  .bp-tx-row .txid:hover{text-decoration:underline;}
+  .bp-tx-more{margin-top:10px;text-align:center;}
+  .bp-tx-card{border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:10px;background:var(--surface2);}
+  .bp-tx-card-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+  .bp-tx-card-head .txid{color:var(--accent2);cursor:pointer;font-family:'JetBrains Mono',monospace;
+    font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%;}
+  .bp-tx-card-head .txid:hover{text-decoration:underline;}
+  .bp-tx-card-head .time{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;white-space:nowrap;}
+  .bp-tx-io-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;}
+  .bp-tx-io-col .lab{font-size:9px;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);margin-bottom:4px;}
+  .bp-tx-io-more{font-size:10px;color:var(--accent2);cursor:pointer;margin-top:4px;}
+  .bp-tx-card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;
+    padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);font-size:10.5px;color:var(--muted);
+    font-family:'JetBrains Mono',monospace;flex-wrap:wrap;gap:6px;}
+  .bp-tx-total{background:var(--accent2);color:#fff;padding:2px 8px;border-radius:5px;font-size:10.5px;font-weight:600;}
+  .bp-coinbase-row{padding:4px 0;}
+  .bp-coinbase-lab{color:var(--text);font-size:11px;display:flex;align-items:center;gap:5px;}
+  .bp-coinbase-pool{color:var(--accent2);font-size:9px;margin-top:2px;margin-left:19px;}
   .tz-control{position:relative;}
   .tz-trigger{display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:8px;
     border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:12px;
@@ -292,8 +407,7 @@
     <div class="logo-row">
       <div class="logo-icon" id="logoIcon"></div>
       <div>
-        <h1>XBT Clock</h1>
-        <div class="sub">Bitcoin community · BIP-110 hardfork</div>
+        <h1>Bitcoin (XBT) Hybrid Mempool - BIP-110</h1>
       </div>
     </div>
     <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu" aria-expanded="false">
@@ -334,6 +448,37 @@
   </header>
 
   <div class="alerts" id="alerts"></div>
+
+  <div class="bp-wrap">
+    <div class="bp-scroll" id="bpScroll"></div>
+    <div class="bp-nav">
+      <button class="bp-nav-btn" id="bpNavFarLeft">«20</button>
+      <button class="bp-nav-btn" id="bpNavLeft">‹</button>
+      <span class="bp-status" id="bpStatus">—</span>
+      <button class="bp-nav-btn" id="bpNavRight">›</button>
+      <button class="bp-nav-btn" id="bpNavFarRight">20»</button>
+    </div>
+  </div>
+
+  <div class="bp-modal-bg" id="bpModalBg">
+    <div class="bp-modal">
+      <div class="bp-modal-head">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0">
+          <button class="bp-modal-back" id="bpModalBack" style="display:none" title="Back">←</button>
+          <div class="bp-modal-title" id="bpModalTitle">Block</div>
+        </div>
+        <button class="bp-modal-close" id="bpModalClose">✕</button>
+      </div>
+      <div class="bp-modal-tabs">
+        <button class="bp-modal-tab active" id="bpTabDetail">Details</button>
+        <button class="bp-modal-tab" id="bpTabTxs" style="display:none">Transactions</button>
+        <button class="bp-modal-tab" id="bpTabRaw">Raw JSON</button>
+      </div>
+      <div class="bp-modal-body" id="bpModalBody">
+        <div class="bp-modal-loading">Loading…</div>
+      </div>
+    </div>
+  </div>
 
   <div class="main-layout">
     <div class="clock-col">
@@ -546,9 +691,7 @@
 
   <footer>
     <div class="foot-links">
-      <a href="https://mempool.guide" target="_blank" rel="noopener">mempool.guide</a>
-      <a href="https://neoxa.exchange/trade/BTCB2_USDC" target="_blank" rel="noopener">neoxa.exchange</a>
-      <a href="https://nonkyc.io/market/BTCB2_USDT" target="_blank" rel="noopener">nonkyc.io</a>
+      <span>Designed by Veloni - 2026</span>
     </div>
     <div id="lastUpdated">—</div>
   </footer>
@@ -802,6 +945,7 @@ async function fetchTipAndBlocks(){
       if (fresh.length){
         playArrival(soundKind); // one cue per batch, not per block
         triggerBlockArrivalAnimation();
+        bpNewBlockPending = true; // consumed exactly once by the next bpRenderAll() call
       }
     }
   }
@@ -823,11 +967,20 @@ async function fetchTipAndBlocks(){
 function mapRawBlock(b){
   return {
     height: b.height,
+    hash: b.id || null,
     ts: b.timestamp * 1000,
     size: b.size,
+    weight: b.weight || null,
     txCount: b.tx_count,
     pool: (b.extras && b.extras.pool && b.extras.pool.name) ? b.extras.pool.name : null,
     difficulty: typeof b.difficulty === 'number' ? b.difficulty : null,
+    // Pre-computed by mempool.guide itself, server-side — this is why the
+    // Latest Blocks cards below don't need to fetch/parse every transaction
+    // the way KV5's raw-RPC version did (getblock verbose 2 + per-tx fee
+    // math); the aggregate is already sitting on the block object.
+    feeRange: (b.extras && Array.isArray(b.extras.feeRange)) ? b.extras.feeRange : null,
+    totalFees: (b.extras && typeof b.extras.totalFees === 'number') ? b.extras.totalFees : null,
+    reward: (b.extras && typeof b.extras.reward === 'number') ? b.extras.reward : null,
   };
 }
 function finalizeBlocks(normalizedArr){
@@ -992,6 +1145,9 @@ function windowedBlocks(asOfMs, windowSec){
 // timestamps are drawn (those sit further out, at R+30) — clipping to R
 // keeps them strictly inside the ring no matter what.
 let rippleAnim = null; // {startTime} while active, null when idle
+let bpNewBlockPending = false; // set when a genuinely new block is detected;
+  // consumed (and reset) by the very next bpRenderAll() call so the "morph"
+  // animation plays exactly once instead of on every routine re-render
 const RIPPLE_COUNT = 3;
 const RIPPLE_DURATION_MS = 1600;   // how long a single ripple takes to expand+fade
 const RIPPLE_STAGGER_MS = 700;     // gap between each ripple's start
@@ -1327,6 +1483,8 @@ function render(){
   renderFeeTiers();
   renderMempoolPanel();
   renderReplacements();
+  bpRenderAll(bpNewBlockPending);
+  bpNewBlockPending = false;
   alignRbfPanelHeight();
 }
 
@@ -1433,7 +1591,7 @@ function renderRecentTx(){
     const amountXBT = (tx.value || 0) / 1e8;
     const usd = avgPx != null ? '$' + (amountXBT*avgPx).toLocaleString('en-US',{maximumFractionDigits:2}) : '—';
     const feeRate = tx.vsize ? (tx.fee / tx.vsize) : null;
-    return `<tr><td><span class="prop-name" style="cursor:default">${short}</span></td>`+
+    return `<tr><td><span class="prop-name" style="cursor:pointer" onclick="bpShowTx('${txid}')">${short}</span></td>`+
            `<td class="r">${usd}</td>`+
            `<td class="r">${amountXBT.toFixed(amountXBT < 1 ? 4 : 2)} XBT</td>`+
            `<td class="r">${feeRate != null ? feeRate.toFixed(2) + ' sat/vB' : '—'}</td></tr>`;
@@ -1555,7 +1713,7 @@ function renderReplacements(){
     // this table, so the "RBF" badge was pure redundant width — only the
     // Mined/Pending distinction is actually new information.
     const status = tx.mined ? '<span class="rbf-badge mined">Mined</span>' : '<span class="rbf-badge pending">Pending</span>';
-    return `<tr><td><span class="prop-name" style="cursor:default">${short}</span></td>`+
+    return `<tr><td><span class="prop-name" style="cursor:pointer" onclick="bpShowTx('${txid}')">${short}</span></td>`+
            `<td class="r">${prevRate != null ? prevRate.toFixed(2) : '—'}</td>`+
            `<td class="r">${newRate != null ? newRate.toFixed(2) : '—'}</td>`+
            `<td class="r">${status}</td></tr>`;
@@ -1583,6 +1741,361 @@ function alignRbfPanelHeight(){
   const target = Math.max(200, Math.round(txBottom - rbfTop));
   rbf.style.height = target + 'px';
   rbf.style.maxHeight = target + 'px';
+}
+
+// ── Latest Blocks ─────────────────────────────────────────────────────────
+// Adapted from KV5's Latest Blocks strip. That version fetched full verbose
+// blocks (getblock hash 2) over a private RPC proxy and computed fee
+// ranges/totals itself from every transaction. We don't have RPC access to
+// an XBT node, but mempool.guide's REST API already computes the same
+// aggregates server-side (extras.feeRange/totalFees/reward on each block),
+// so the strip runs entirely off the block data already being fetched for
+// the ring — no extra requests needed just to populate it.
+const BP_MAX_CARDS = 150; // how many recent blocks to render as cards
+let bpMaxSize = 1;
+
+function bpEsc(s){
+  return String(s).replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+}
+function bpEstNextBlockSec(){
+  if (state.diffAdj && typeof state.diffAdj.timeAvg === 'number') return state.diffAdj.timeAvg / 1000;
+  return CONFIG.TARGET_BLOCK_SECONDS;
+}
+function bpMakeCard(b){
+  const card = document.createElement('div');
+  card.className = 'bp-block';
+  card.onclick = () => bpShowBlock(b.hash);
+
+  const age = fmtAgo(b.ts);
+  const pool = b.pool || 'Unknown';
+  const sizeBar = Math.min(100, ((b.size||0) / bpMaxSize) * 100).toFixed(0);
+
+  let feeStr = '—', maxFee = 0;
+  if (b.feeRange && b.feeRange.length){
+    const min = b.feeRange[0], max = b.feeRange[b.feeRange.length-1];
+    maxFee = max;
+    feeStr = `${min.toFixed(1)} – ${max.toFixed(1)} sat/vB`;
+  }
+  const rewardSats = b.reward != null ? b.reward : subsidyAt(b.height);
+  const valStr = (rewardSats/1e8) >= 1 ? (rewardSats/1e8).toFixed(2) : (rewardSats/1e8).toFixed(4);
+  const barColor = maxFee > 50 ? 'rgba(255,80,60,.8)' : maxFee > 20 ? 'rgba(245,140,35,.8)'
+    : maxFee > 5 ? 'rgba(245,190,40,.8)' : 'rgba(0,212,170,.7)';
+
+  card.innerHTML = `
+    <div class="bp-height">${fmtN(b.height)}</div>
+    <div class="bp-fee-bar" style="background:linear-gradient(90deg,rgba(0,212,170,.5),${barColor})"></div>
+    <div class="bp-fee-txt"><span class="bp-fee-range">${feeStr}</span></div>
+    <div class="bp-value-line"><div class="bp-value">${valStr}</div><div class="bp-value-unit">XBT</div></div>
+    <div class="bp-meta-line">${fmtN(b.txCount||0)} TX · <span class="bp-age">${age}</span></div>
+    <div class="bp-pool"><div class="bp-pool-dot"></div>${bpEsc(pool)}</div>
+    <div class="bp-size-bar"><div class="bp-size-fill" style="width:${sizeBar}%"></div></div>
+  `;
+  return card;
+}
+function bpMakePendingCard(){
+  const card = document.createElement('div');
+  card.className = 'bp-pending';
+  const count = (state.mempoolStats && state.mempoolStats.count) || 0;
+  const etaMin = Math.max(0, Math.round(bpEstNextBlockSec()/60));
+  card.innerHTML = `
+    <div class="bp-pending-lbl">⏳ Pending</div>
+    <div class="bp-fee-bar" style="background:linear-gradient(90deg,rgba(0,212,170,.4),rgba(0,212,170,.6))"></div>
+    <div class="bp-fee-txt">mempool</div>
+    <div class="bp-value-line"><div class="bp-value">—</div><div class="bp-value-unit">XBT</div></div>
+    <div class="bp-meta-line">${fmtN(count)} TX · in ~${etaMin}m</div>
+  `;
+  return card;
+}
+function bpRenderAll(isNewBlock){
+  const scroll = document.getElementById('bpScroll');
+  if (!scroll) return;
+  const recent = state.blocks.slice(-BP_MAX_CARDS).reverse(); // newest first
+  bpMaxSize = Math.max(...recent.map(b => b.size||1), 1);
+
+  scroll.innerHTML = '';
+  scroll.appendChild(bpMakePendingCard());
+  recent.forEach((b, i) => {
+    const card = bpMakeCard(b);
+    // Only the actual arrival of a new block should play the morph
+    // animation — bpRenderAll() itself runs on every routine render cycle
+    // (every ~1s), so applying this unconditionally to card 0 replayed the
+    // animation constantly, reading as a persistent flash/blink instead of
+    // a one-time cue.
+    if (isNewBlock && i === 0) card.classList.add('morphing');
+    scroll.appendChild(card);
+  });
+
+  const status = document.getElementById('bpStatus');
+  if (status){
+    status.textContent = recent.length
+      ? `${fmtN(recent.length)} of ${fmtN(state.blocks.length)} loaded blocks`
+      : 'awaiting data';
+  }
+}
+function bpInitNav(){
+  const scroll = document.getElementById('bpScroll');
+  const CARD_W = 120; // 108px card + 12px gap
+  document.getElementById('bpNavLeft').addEventListener('click', () => scroll.scrollBy({left:-CARD_W, behavior:'smooth'}));
+  document.getElementById('bpNavRight').addEventListener('click', () => scroll.scrollBy({left:CARD_W, behavior:'smooth'}));
+  document.getElementById('bpNavFarLeft').addEventListener('click', () => scroll.scrollBy({left:-CARD_W*20, behavior:'smooth'}));
+  document.getElementById('bpNavFarRight').addEventListener('click', () => scroll.scrollBy({left:CARD_W*20, behavior:'smooth'}));
+}
+
+// ── Block detail modal ──────────────────────────────────────────────────
+// Block-level detail works off mempool.guide's public REST API (GET
+// /api/block/:hash) the same way the rest of this page does — no node of
+// our own required. Per-transaction and address lookups (GET /api/tx/:txid,
+// GET /api/address/:address) are the same kind of public REST endpoint and
+// would very likely also work, but aren't wired up here — this modal is
+// scoped to block-level detail only for now.
+let bpModalRawData = null;
+let bpModalKind = 'block'; // 'block' | 'tx' | 'address'
+let bpModalId = null;
+let bpModalHistory = []; // [{kind, id}] — back-navigation stack
+
+function bpFmtSats(sats){ return typeof sats === 'number' ? (sats/1e8).toFixed(sats < 1e8 ? 6 : 4) + ' XBT' : '—'; }
+function bpPushHistory(){
+  // Only push if a modal was actually already open (bpModalId set) — the
+  // very first open of any modal has nothing to go back to yet.
+  if (bpModalId) bpModalHistory.push({ kind: bpModalKind, id: bpModalId });
+  document.getElementById('bpModalBack').style.display = bpModalHistory.length ? '' : 'none';
+}
+
+async function bpShowBlock(hash, fromBack){
+  if (!hash) return;
+  if (!fromBack) bpPushHistory();
+  bpModalKind = 'block'; bpModalId = hash;
+  bpOpenModalShell('Block');
+  document.getElementById('bpTabTxs').style.display = '';
+  try {
+    const d = await fetchJSON(SOURCES.mempool + '/v1/block/' + hash);
+    bpModalRawData = d;
+    bpSwitchModalTab('detail');
+  } catch (e){
+    bpModalError(e);
+  }
+}
+async function bpShowTx(txid, fromBack){
+  if (!txid) return;
+  if (!fromBack) bpPushHistory();
+  bpModalKind = 'tx'; bpModalId = txid;
+  bpOpenModalShell('Transaction');
+  document.getElementById('bpTabTxs').style.display = 'none';
+  try {
+    const d = await fetchJSON(SOURCES.mempool + '/tx/' + txid);
+    bpModalRawData = d;
+    bpSwitchModalTab('detail');
+  } catch (e){
+    bpModalError(e);
+  }
+}
+async function bpShowAddress(address, fromBack){
+  if (!address) return;
+  if (!fromBack) bpPushHistory();
+  bpModalKind = 'address'; bpModalId = address;
+  bpOpenModalShell('Address');
+  document.getElementById('bpTabTxs').style.display = 'none';
+  try {
+    const d = await fetchJSON(SOURCES.mempool + '/address/' + address);
+    bpModalRawData = d;
+    bpSwitchModalTab('detail');
+  } catch (e){
+    bpModalError(e);
+  }
+}
+function bpGoBack(){
+  if (!bpModalHistory.length) return;
+  const prev = bpModalHistory.pop();
+  document.getElementById('bpModalBack').style.display = bpModalHistory.length ? '' : 'none';
+  if (prev.kind === 'block') bpShowBlock(prev.id, true);
+  else if (prev.kind === 'tx') bpShowTx(prev.id, true);
+  else if (prev.kind === 'address') bpShowAddress(prev.id, true);
+}
+function bpOpenModalShell(title){
+  document.getElementById('bpModalBg').classList.add('open');
+  document.getElementById('bpModalTitle').textContent = title;
+  document.getElementById('bpModalBody').innerHTML = '<div class="bp-modal-loading">Loading…</div>';
+  bpModalRawData = null;
+}
+function bpModalError(e){
+  document.getElementById('bpModalBody').innerHTML =
+    `<div class="bp-modal-error">Couldn't load ${bpEsc(bpModalKind)} detail.<br>${bpEsc(e.message||'')}</div>`;
+}
+
+function bpRenderBlockDetail(d){
+  document.getElementById('bpModalTitle').textContent = 'Block #' + fmtN(d.height);
+  const extras = d.extras || {};
+  const feeRange = Array.isArray(extras.feeRange) ? extras.feeRange : null;
+  const fields = [
+    ['Height', fmtN(d.height)],
+    ['Hash', d.id],
+    ['Timestamp', new Date(d.timestamp*1000).toLocaleString('en-US',{timeZone:state.selectedTZ})],
+    ['Size / Weight', fmtBytes(d.size) + ' / ' + fmtN(d.weight) + ' WU'],
+    ['Transactions', fmtN(d.tx_count)],
+    ['Difficulty', fmtDifficulty(d.difficulty)],
+    ['Mining pool', (extras.pool && extras.pool.name) || 'Unknown'],
+    ['Fee range', feeRange ? feeRange[0].toFixed(2) + ' – ' + feeRange[feeRange.length-1].toFixed(2) + ' sat/vB' : '—'],
+    ['Median fee', typeof extras.medianFee === 'number' ? extras.medianFee.toFixed(2) + ' sat/vB' : '—'],
+    ['Total fees', bpFmtSats(extras.totalFees)],
+    ['Reward', bpFmtSats(extras.reward)],
+    ['Merkle root', d.merkle_root],
+    ['Nonce / Bits', fmtN(d.nonce) + ' / ' + d.bits],
+  ];
+  let html = bpFieldsGrid(fields);
+  if (d.previousblockhash){
+    html += `<div class="bp-modal-field" style="margin-top:8px"><div class="l">Previous block</div>
+      <div class="v" style="cursor:pointer;color:var(--accent2)" onclick="bpShowBlock('${bpEsc(d.previousblockhash)}')">${bpEsc(d.previousblockhash)}</div></div>`;
+  }
+  document.getElementById('bpModalBody').innerHTML = html;
+}
+let bpUidCounter = 0;
+function bpIoRows(items, cutoff){
+  cutoff = cutoff || 8;
+  const rows = items.map(it => {
+    if (it.addr){
+      return `<div class="bp-io-row"><span class="bp-io-addr" onclick="bpShowAddress('${bpEsc(it.addr)}')">${bpEsc(it.addr)}</span><span class="bp-io-val">${bpFmtSats(it.val)}</span></div>`;
+    }
+    return `<div class="bp-io-row"><span class="bp-io-addr" style="cursor:default;color:var(--muted)">${it.isData ? 'OP_RETURN' : '(unknown)'}</span><span class="bp-io-val">${bpFmtSats(it.val)}</span></div>`;
+  });
+  if (rows.length <= cutoff) return rows.join('');
+  const uid = 'bpio' + (bpUidCounter++);
+  const shown = rows.slice(0, cutoff).join('');
+  const hidden = rows.slice(cutoff).join('');
+  const remaining = rows.length - cutoff;
+  return shown +
+    `<div id="${uid}" style="display:none">${hidden}</div>` +
+    `<div class="bp-tx-io-more" onclick="document.getElementById('${uid}').style.display='block';this.style.display='none'">Show all (${remaining} remaining)</div>`;
+}
+function bpMakeTxCardHtml(tx, blockPoolName){
+  const isCoinbase = !!(tx.vin && tx.vin[0] && tx.vin[0].is_coinbase);
+  const time = tx.status && tx.status.confirmed
+    ? new Date(tx.status.block_time*1000).toLocaleString('en-US',{timeZone:state.selectedTZ})
+    : 'Unconfirmed';
+  const rate = tx.fee && tx.vsize ? (tx.fee/tx.vsize).toFixed(1) + ' sat/vB' : '—';
+  const px = currentAvgPrice();
+  const usd = (px != null && tx.fee != null) ? '$' + ((tx.fee/1e8)*px).toFixed(2) : null;
+  const totalOut = (tx.vout||[]).reduce((s,o) => s + (o.value||0), 0);
+  const short = tx.txid.slice(0,10) + '…' + tx.txid.slice(-8);
+
+  const inputsHtml = isCoinbase
+    ? `<div class="bp-coinbase-row"><div class="bp-coinbase-lab">⛏ Coinbase (Newly Generated Coins)</div>${blockPoolName ? `<div class="bp-coinbase-pool">${bpEsc(blockPoolName)}</div>` : ''}</div>`
+    : bpIoRows((tx.vin||[]).map(vin => ({ addr: vin.prevout && vin.prevout.scriptpubkey_address, val: vin.prevout && vin.prevout.value })));
+  const outputsHtml = bpIoRows((tx.vout||[]).map(vout => ({ addr: vout.scriptpubkey_address, val: vout.value, isData: !vout.scriptpubkey_address })));
+
+  return `<div class="bp-tx-card">
+    <div class="bp-tx-card-head">
+      <span class="txid" onclick="bpShowTx('${tx.txid}')" title="${tx.txid}">${short}</span>
+      <span class="time">${time}</span>
+    </div>
+    <div class="bp-tx-io-grid">
+      <div class="bp-tx-io-col"><div class="lab">${isCoinbase ? 'Source' : 'Inputs (' + (tx.vin||[]).length + ')'}</div>${inputsHtml}</div>
+      <div class="bp-tx-io-col"><div class="lab">Outputs (${(tx.vout||[]).length})</div>${outputsHtml}</div>
+    </div>
+    <div class="bp-tx-card-foot">
+      <span>${rate}${tx.fee != null ? ' · ' + fmtN(tx.fee) + ' sats' + (usd ? ' · ' + usd : '') : ''}</span>
+      <span class="bp-tx-total">${bpFmtSats(totalOut)}</span>
+    </div>
+  </div>`;
+}
+async function bpRenderBlockTxs(startIndex){
+  const body = document.getElementById('bpModalBody');
+  body.innerHTML = '<div class="bp-modal-loading">Loading…</div>';
+  try {
+    const txs = await fetchJSON(SOURCES.mempool + '/block/' + bpModalId + '/txs/' + (startIndex||0));
+    if (!Array.isArray(txs) || !txs.length){
+      body.innerHTML = '<div class="bp-modal-error">No transactions returned.</div>';
+      return;
+    }
+    const blockPoolName = bpModalRawData && bpModalRawData.extras && bpModalRawData.extras.pool
+      ? bpModalRawData.extras.pool.name : null;
+    let html = txs.map(tx => bpMakeTxCardHtml(tx, blockPoolName)).join('');
+    html += `<div class="bp-tx-more"><button class="bp-nav-btn" onclick="bpRenderBlockTxs(${(startIndex||0)+25})">Load next 25 →</button></div>`;
+    body.innerHTML = html;
+  } catch (e){
+    bpModalError(e);
+  }
+}
+function bpRenderTxDetail(d){
+  document.getElementById('bpModalTitle').textContent = 'Transaction';
+  const isCoinbase = !!(d.vin && d.vin[0] && d.vin[0].is_coinbase);
+  const status = d.status && d.status.confirmed
+    ? `Confirmed in block ${fmtN(d.status.block_height)} (${new Date(d.status.block_time*1000).toLocaleString('en-US',{timeZone:state.selectedTZ})})`
+    : 'Unconfirmed (in mempool)';
+  const rate = d.fee && d.vsize ? (d.fee/d.vsize).toFixed(2) + ' sat/vB' : '—';
+  const px = currentAvgPrice();
+  const usd = (px != null && d.fee != null) ? '$' + ((d.fee/1e8)*px).toFixed(2) : null;
+  const totalOut = (d.vout||[]).reduce((s,o) => s + (o.value||0), 0);
+  const fields = [
+    ['TXID', d.txid],
+    ['Status', status],
+    ['Size / vSize / Weight', fmtBytes(d.size) + ' / ' + fmtN(d.vsize) + ' vB / ' + fmtN(d.weight) + ' WU'],
+    ['Fee', bpFmtSats(d.fee) + (usd ? ' (' + usd + ')' : '')],
+    ['Fee rate', rate],
+  ];
+  let html = bpFieldsGrid(fields);
+  html += '<div class="bp-tx-io-grid" style="margin-top:10px">';
+  html += `<div class="bp-tx-io-col"><div class="lab">${isCoinbase ? 'Source' : 'Inputs (' + (d.vin||[]).length + ')'}</div>`;
+  html += isCoinbase
+    ? `<div class="bp-coinbase-row"><div class="bp-coinbase-lab">⛏ Coinbase (Newly Generated Coins)</div></div>`
+    : bpIoRows((d.vin||[]).map(vin => ({ addr: vin.prevout && vin.prevout.scriptpubkey_address, val: vin.prevout && vin.prevout.value })));
+  html += `</div><div class="bp-tx-io-col"><div class="lab">Outputs (${(d.vout||[]).length})</div>`;
+  html += bpIoRows((d.vout||[]).map(vout => ({ addr: vout.scriptpubkey_address, val: vout.value, isData: !vout.scriptpubkey_address })));
+  html += '</div></div>';
+  html += `<div class="bp-tx-card-foot" style="border-top:1px solid var(--border);margin-top:12px;padding-top:10px">
+    <span>Total output</span><span class="bp-tx-total">${bpFmtSats(totalOut)}</span></div>`;
+  document.getElementById('bpModalBody').innerHTML = html;
+}
+function bpRenderAddressDetail(d){
+  document.getElementById('bpModalTitle').textContent = 'Address';
+  const cs = d.chain_stats || {}, ms = d.mempool_stats || {};
+  const balance = (cs.funded_txo_sum||0) - (cs.spent_txo_sum||0);
+  const fields = [
+    ['Address', d.address],
+    ['Balance', bpFmtSats(balance)],
+    ['Total received', bpFmtSats(cs.funded_txo_sum)],
+    ['Total sent', bpFmtSats(cs.spent_txo_sum)],
+    ['Confirmed tx count', fmtN(cs.tx_count)],
+    ['Unconfirmed tx count', fmtN(ms.tx_count)],
+  ];
+  document.getElementById('bpModalBody').innerHTML = bpFieldsGrid(fields);
+}
+function bpFieldsGrid(fields){
+  let html = '<div class="bp-modal-grid">';
+  fields.forEach(([l,v]) => {
+    html += `<div class="bp-modal-field"><div class="l">${bpEsc(l)}</div><div class="v">${bpEsc(v==null?'—':v)}</div></div>`;
+  });
+  return html + '</div>';
+}
+function bpSwitchModalTab(tab){
+  document.getElementById('bpTabDetail').classList.toggle('active', tab==='detail');
+  document.getElementById('bpTabTxs').classList.toggle('active', tab==='txs');
+  document.getElementById('bpTabRaw').classList.toggle('active', tab==='raw');
+  if (!bpModalRawData && tab !== 'txs') return; // still loading
+  if (tab === 'raw'){
+    document.getElementById('bpModalBody').innerHTML =
+      `<div class="bp-modal-raw">${bpEsc(JSON.stringify(bpModalRawData, null, 2))}</div>`;
+  } else if (tab === 'txs'){
+    bpRenderBlockTxs(0);
+  } else if (tab === 'detail'){
+    if (bpModalKind === 'block') bpRenderBlockDetail(bpModalRawData);
+    else if (bpModalKind === 'tx') bpRenderTxDetail(bpModalRawData);
+    else if (bpModalKind === 'address') bpRenderAddressDetail(bpModalRawData);
+  }
+}
+function bpCloseModal(){
+  document.getElementById('bpModalBg').classList.remove('open');
+  bpModalHistory = [];
+  bpModalId = null;
+  document.getElementById('bpModalBack').style.display = 'none';
+}
+function bpInitModal(){
+  document.getElementById('bpModalClose').addEventListener('click', bpCloseModal);
+  document.getElementById('bpModalBack').addEventListener('click', bpGoBack);
+  document.getElementById('bpModalBg').addEventListener('click', (e) => { if (e.target.id === 'bpModalBg') bpCloseModal(); });
+  document.getElementById('bpTabDetail').addEventListener('click', () => bpSwitchModalTab('detail'));
+  document.getElementById('bpTabTxs').addEventListener('click', () => bpSwitchModalTab('txs'));
+  document.getElementById('bpTabRaw').addEventListener('click', () => bpSwitchModalTab('raw'));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') bpCloseModal(); });
 }
 
 // ── Scrub slider ──────────────────────────────────────────────────────────
@@ -1876,6 +2389,8 @@ initRingHover();
 initTZSelector();
 initSoundControl();
 initHamburgerMenu();
+bpInitNav();
+bpInitModal();
 refreshChain().then(refreshMarket);
 setInterval(refreshChain, CONFIG.REFRESH_CHAIN_MS);
 setInterval(refreshMarket, CONFIG.REFRESH_MARKET_MS);
