@@ -131,7 +131,7 @@
   .bp-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;
     align-items:center;justify-content:center;padding:20px;}
   .bp-modal-bg.open{display:flex;}
-  .bp-modal{background:#0d1520;border:1px solid var(--border2);border-radius:14px;max-width:640px;
+  .bp-modal{background:#0d1520;border:1px solid var(--border2);border-radius:14px;max-width:820px;
     width:100%;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;
     box-shadow:0 24px 64px rgba(0,0,0,.6);}
   .bp-modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;
@@ -162,7 +162,7 @@
   .bp-io-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;
     border-bottom:1px solid rgba(255,255,255,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;}
   .bp-io-addr{color:var(--accent2);cursor:pointer;overflow:hidden;text-overflow:ellipsis;
-    white-space:nowrap;max-width:260px;}
+    white-space:nowrap;flex:1 1 auto;min-width:0;}
   .bp-io-addr:hover{text-decoration:underline;}
   .bp-io-val{color:var(--text);white-space:nowrap;flex-shrink:0;}
   .bp-tx-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;
@@ -218,7 +218,7 @@
 
   /* ── The clock stage ── */
   .stage{position:relative;background:var(--surface);border:1px solid var(--border);
-    border-radius:16px;aspect-ratio:1/1;max-width:900px;margin:0 auto;overflow:hidden;}
+    border-radius:16px;aspect-ratio:1/1;max-width:630px;margin:0 auto;overflow:hidden;}
   @media(max-width:640px){.stage{aspect-ratio:auto;min-height:560px;}}
   #ring{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;}
 
@@ -240,10 +240,15 @@
     .corner{transform:scale(0.82);} .corner.tl{transform-origin:top left;} .corner.bl{transform-origin:bottom left;}
     .corner.tr{transform-origin:top right;} .corner.br{transform-origin:bottom right;}
   }
-  .stat-label{font-size:9.5px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:500;margin-bottom:2px;}
+  .stat-label{font-size:8.5px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:500;margin-bottom:2px;}
   .stat-val{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:clamp(15px,2.6vw,22px);letter-spacing:-0.4px;line-height:1.1;}
+  #st-hashrate,#st-halving,#st-24h-blocks,#st-time{font-size:clamp(11px,1.82vw,15px);} /* 30% down
+    from the base clamp — these four were crowding the smaller 630px ring after it was
+    reduced; DEX prices (.px-val) and everything else are untouched */
   .stat-val.sm{font-size:13px;font-weight:500;}
-  .stat-sub{font-size:10.5px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace;}
+  .stat-val.px-val{font-size:16px;} /* a modest bump from the old 13px "sm" size —
+    deliberately fixed rather than the full clamp(15-22px), which read as too big */
+  .stat-sub{font-size:9.5px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace;}
   .stat-sub.up{color:var(--accent);} .stat-sub.dn{color:var(--danger);}
   .stat-block{margin-bottom:14px;}
   .stat-block:last-child{margin-bottom:0;}
@@ -283,7 +288,7 @@
   /* ── Scrub bar ── */
   .scrubbar{display:flex;align-items:center;gap:14px;margin-top:16px;padding:12px 18px;
     background:var(--surface);border:1px solid var(--border);border-radius:12px;
-    max-width:900px;margin-left:auto;margin-right:auto;}
+    max-width:630px;margin-left:auto;margin-right:auto;}
   .scrub-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);
     font-family:'JetBrains Mono',monospace;flex-shrink:0;white-space:nowrap;}
   input[type=range]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--border2);outline:none;}
@@ -306,7 +311,7 @@
   /* ── Since-last-block + Miner Propagation panels ── */
   .panels-row{display:flex;flex-direction:column;gap:16px;}
   .main-layout{display:grid;grid-template-columns:minmax(480px,1fr) minmax(300px,380px) minmax(340px,440px);gap:20px;align-items:start;
-    max-width:1760px;margin:0 auto;} /* 900 (ring cap) + 20 + 380 (mempool col cap) + 20 + 440
+    max-width:1490px;margin:0 auto;} /* 630 (ring cap) + 20 + 380 (mempool col cap) + 20 + 440
     (metrics col cap) — grid claims only as much width as its content actually needs and
     centers as one block, same reasoning as before but extended for the third column.
     The ring column's 480px floor is a hard backstop — it should never actually bind
@@ -347,6 +352,12 @@
   .prop-note{padding:6px 16px 0;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;
     flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .prop-note.warn{color:var(--warn);}
+  .prop-pie-row{display:flex;align-items:center;gap:12px;padding:10px 16px;flex:none;}
+  .prop-pie-legend{display:flex;flex-direction:column;gap:3px;font-size:10px;
+    font-family:'JetBrains Mono',monospace;color:var(--muted);flex:1;min-width:0;}
+  .prop-pie-legend-row{display:flex;align-items:center;gap:5px;overflow:hidden;}
+  .prop-pie-legend-row i{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .prop-pie-legend-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .prop-scroll{overflow-y:auto;overflow-x:auto;min-height:0;flex:1 1 auto;}
   .prop-table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:11.5px;}
   .prop-table th{position:sticky;top:0;background:var(--surface);font-size:9px;text-transform:uppercase;
@@ -522,12 +533,12 @@
     <div class="corner tr">
       <div class="stat-block">
         <div class="stat-label">Neoxa · XBT/USDC</div>
-        <div class="exch-row"><span class="exch-tag">$</span><span class="stat-val" id="st-neoxa-px">—</span></div>
+        <div class="exch-row"><span class="exch-tag">$</span><span class="stat-val px-val" id="st-neoxa-px">—</span></div>
         <div class="stat-sub" id="st-neoxa-chg">—</div>
       </div>
       <div class="stat-block">
         <div class="stat-label">NonKYC · XBT/USDT</div>
-        <div class="exch-row"><span class="exch-tag">$</span><span class="stat-val" id="st-nonkyc-px">—</span></div>
+        <div class="exch-row"><span class="exch-tag">$</span><span class="stat-val px-val" id="st-nonkyc-px">—</span></div>
         <div class="stat-sub" id="st-nonkyc-chg">—</div>
       </div>
       <div class="stat-block">
@@ -672,6 +683,10 @@
         </select>
       </div>
       <div class="prop-note" id="propNote">—</div>
+      <div class="prop-pie-row" id="propPieRow">
+        <canvas id="propPie" width="90" height="90"></canvas>
+        <div class="prop-pie-legend" id="propPieLegend"></div>
+      </div>
       <div class="prop-scroll">
         <table class="prop-table">
           <thead><tr><th>Miner / Coinbase</th><th class="r">Blocks</th></tr></thead>
@@ -877,10 +892,18 @@ function fmtAgo(ms){
   return fmtDur(sec) + ' ago';
 }
 function toRoman(n){ return n >= 0 && n < romanNumerals.length ? romanNumerals[n] : String(n); }
+const POOL_PALETTE = [
+  '#00d4aa', '#0099ff', '#f5a623', '#ff4757', '#a78bfa', '#8b5e3c',
+  '#e8edf3', '#6b7a8d', '#22c55e', '#ec4899', '#eab308', '#38bdf8',
+  '#84cc16', '#f97316', '#94a3b8', '#c084fc',
+]; // a curated palette rather than pure hash→hue math — that produced
+   // similarly-vivid colors for every pool with no real tonal variety
+   // (no room for brown/grey/white, and nearby hues could look near-
+   // identical next to each other in the pie chart)
 function poolColor(name){
   let h = 0;
   for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
-  return `hsl(${h % 360}, 65%, 55%)`;
+  return POOL_PALETTE[h % POOL_PALETTE.length];
 }
 
 // ── Chain math (deterministic, works for both live tip and scrubbed height) ─
@@ -1421,6 +1444,7 @@ function render(){
     const chgEl = document.getElementById('st-neoxa-chg');
     chgEl.textContent = fmtPct(chg) + ' 24h';
     chgEl.className = 'stat-sub ' + (chg >= 0 ? 'up' : 'dn');
+    document.getElementById('st-neoxa-px').style.color = isFinite(chg) ? (chg >= 0 ? 'var(--accent)' : 'var(--danger)') : '';
   }
   if (state.nonkyc){
     document.getElementById('st-nonkyc-px').textContent = fmtPrice(parseFloat(state.nonkyc.lastPrice));
@@ -1428,6 +1452,7 @@ function render(){
     const chgEl = document.getElementById('st-nonkyc-chg');
     chgEl.textContent = isFinite(chg) ? fmtPct(chg) + ' 24h' : '—';
     chgEl.className = 'stat-sub ' + (chg >= 0 ? 'up' : 'dn');
+    document.getElementById('st-nonkyc-px').style.color = isFinite(chg) ? (chg >= 0 ? 'var(--accent)' : 'var(--danger)') : '';
   }
   const avgPx = currentAvgPrice();
   if (avgPx != null){
@@ -1579,13 +1604,55 @@ function renderPropagation(){
   const noteEl = document.getElementById('propNote');
   noteEl.textContent = note;
   noteEl.classList.toggle('warn', short);
+  drawPropPie(tally, total);
+}
+function drawPropPie(tally, total){
+  const canvas = document.getElementById('propPie');
+  const ctx = canvas.getContext('2d');
+  const size = 90, cx = size/2, cy = size/2, r = size/2 - 2;
+  ctx.clearRect(0,0,size,size);
+  const entries = Object.entries(tally).sort((a,b) => b[1]-a[1]);
+  const top = entries.slice(0,6);
+  const otherCount = entries.slice(6).reduce((s,[,c]) => s+c, 0);
+  const slices = otherCount > 0 ? [...top, ['Other', otherCount]] : top;
+
+  let angle = -Math.PI/2;
+  const legend = document.getElementById('propPieLegend');
+  legend.innerHTML = slices.map(([name,count]) => {
+    const frac = count/total;
+    const sweep = frac * Math.PI*2;
+    const color = name === 'Other' ? '#5a6b80' : poolColor(name);
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,angle,angle+sweep);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+    angle += sweep;
+    const pct = (frac*100).toFixed(0);
+    const safe = name.replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+    return `<div class="prop-pie-legend-row"><i style="background:${color}"></i><span>${safe} ${pct}%</span></div>`;
+  }).join('');
 }
 
 // ── Recent Transactions ───────────────────────────────────────────────────
 function currentAvgPrice(){
-  const prices = [state.neoxa && parseFloat(state.neoxa.lastPrice), state.nonkyc && parseFloat(state.nonkyc.lastPrice)]
-    .filter(p => isFinite(p));
-  return prices.length ? prices.reduce((a,b)=>a+b,0) / prices.length : null;
+  // Volume-weighted rather than a simple average — more accurate given the
+  // two exchanges' liquidity already differs, and scales cleanly to more
+  // exchanges as XBT gets listed elsewhere, without ever needing to decide
+  // which single exchange is "the most liquid one" to switch to.
+  const sources = [
+    { px: state.neoxa && parseFloat(state.neoxa.lastPrice), vol: state.neoxa && parseFloat(state.neoxa.quoteVolume24h) },
+    { px: state.nonkyc && parseFloat(state.nonkyc.lastPrice), vol: state.nonkyc && parseFloat(state.nonkyc.quoteVolume24h) },
+  ].filter(s => isFinite(s.px));
+  if (!sources.length) return null;
+  const totalVol = sources.reduce((sum,s) => sum + (isFinite(s.vol) && s.vol > 0 ? s.vol : 0), 0);
+  if (totalVol > 0){
+    return sources.reduce((sum,s) => sum + s.px * ((isFinite(s.vol) && s.vol > 0 ? s.vol : 0) / totalVol), 0);
+  }
+  // Neither source has usable volume data — fall back to a plain average
+  // rather than producing NaN or silently dropping a source.
+  return sources.reduce((sum,s) => sum + s.px, 0) / sources.length;
 }
 function renderRecentTx(){
   const body = document.getElementById('txBody');
@@ -1693,6 +1760,25 @@ function drawMempoolChart(){
   const counts = hist.map(p => p.count);
   const min = Math.min(...counts), max = Math.max(...counts, min+1);
   const pad = 6;
+
+  // Vertical markers where a block actually landed within this chart's time
+  // range, so the count trend can be read alongside when blocks arrived —
+  // directly what was asked for, using timestamps we already have rather
+  // than assuming evenly-spaced samples.
+  const t0 = hist[0].ts, t1 = hist[hist.length-1].ts;
+  if (t1 > t0){
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.lineWidth = 1;
+    state.blocks.forEach(b => {
+      if (b.ts < t0 || b.ts > t1) return;
+      const x = pad + ((b.ts - t0)/(t1 - t0)) * (w - pad*2);
+      ctx.beginPath();
+      ctx.moveTo(x, pad);
+      ctx.lineTo(x, h - pad);
+      ctx.stroke();
+    });
+  }
+
   ctx.beginPath();
   hist.forEach((p,i) => {
     const x = pad + (i/(hist.length-1)) * (w - pad*2);
@@ -1740,7 +1826,7 @@ function alignRbfPanelHeight(){
   const rbf = document.getElementById('rbfPanel');
   const recentTx = document.getElementById('recentTxPanel');
   if (!rbf || !recentTx) return;
-  if (window.innerWidth <= 1300){
+  if (window.innerWidth <= 1650){
     rbf.style.height = '';
     rbf.style.maxHeight = '';
     return;
