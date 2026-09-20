@@ -522,12 +522,12 @@
     <div class="corner tr">
       <div class="stat-block">
         <div class="stat-label">Neoxa · XBT/USDC</div>
-        <div class="exch-row"><span class="exch-tag">$</span><span class="stat-val sm" id="st-neoxa-px">—</span></div>
+        <div class="exch-row"><span class="exch-tag">$</span><span class="stat-val" id="st-neoxa-px">—</span></div>
         <div class="stat-sub" id="st-neoxa-chg">—</div>
       </div>
       <div class="stat-block">
         <div class="stat-label">NonKYC · XBT/USDT</div>
-        <div class="exch-row"><span class="exch-tag">$</span><span class="stat-val sm" id="st-nonkyc-px">—</span></div>
+        <div class="exch-row"><span class="exch-tag">$</span><span class="stat-val" id="st-nonkyc-px">—</span></div>
         <div class="stat-sub" id="st-nonkyc-chg">—</div>
       </div>
       <div class="stat-block">
@@ -850,8 +850,7 @@ function fmtPrice(p){
   if (p == null || !isFinite(p)) return '—';
   if (p < 0.01) return p.toFixed(6);
   if (p < 1) return p.toFixed(4);
-  if (p < 100) return p.toFixed(3);
-  return p.toLocaleString('en-US',{maximumFractionDigits:2});
+  return Math.round(p).toLocaleString('en-US');
 }
 function fmtUSD(n){
   if (n == null || !isFinite(n)) return '—';
