@@ -321,10 +321,23 @@
   @media(max-width:1650px){
     .main-layout{grid-template-columns:1fr;}
     .panels-row{margin-top:16px;}
+    .stage,.scrubbar{max-width:750px;} /* once the clock has the full row to
+      itself instead of sharing it with the two side columns, it can afford
+      to be noticeably bigger than the 630px multi-column cap */
   }
   .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;
     overflow:hidden;display:flex;flex-direction:column;max-height:340px;}
   .panel-fixed{height:340px;flex-shrink:0;}
+  @media(max-width:1650px){
+    .panel{max-height:none;} /* the 340px cap exists to keep panels aligned
+      side-by-side in the multi-column layout — once everything stacks into
+      one column with normal page scroll, that constraint has no purpose,
+      and it was clipping the miner table below the now-larger pie chart.
+      This has to come AFTER the base .panel rule above — same specificity,
+      so source order decides the winner regardless of media-query nesting,
+      and placed earlier in the file this override was silently losing to
+      the base rule every time, undoing the fix entirely. */
+  }
   .panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;
     padding:12px 16px;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;
     font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);flex:none;}
@@ -352,12 +365,26 @@
   .prop-note{padding:6px 16px 0;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;
     flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .prop-note.warn{color:var(--warn);}
-  .prop-pie-row{display:flex;align-items:center;gap:12px;padding:10px 16px;flex:none;}
+  .prop-pie-row{display:flex;align-items:center;gap:12px;padding:10px 16px;flex:none;flex-wrap:wrap;}
+  #propPie{max-width:100%;height:auto;}
   .prop-pie-legend{display:flex;flex-direction:column;gap:3px;font-size:10px;
     font-family:'JetBrains Mono',monospace;color:var(--muted);flex:1;min-width:0;}
   .prop-pie-legend-row{display:flex;align-items:center;gap:5px;overflow:hidden;}
   .prop-pie-legend-row i{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
   .prop-pie-legend-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  @media(max-width:1650px){
+    .prop-pie-row{justify-content:center;}
+    .prop-pie-legend{font-size:20px;flex:0 1 auto;} /* was flex:1, which
+      greedily fills all leftover row width regardless of justify-content —
+      that's what was actually blocking the centering, since there was
+      never any leftover space left for "center" to distribute */
+    /* Scoped to the same collapsed/single-column state the pie chart's own
+       3x size bump already uses — these were applied unconditionally last
+       time, which was the actual mistake. Placed after the base rules
+       above (not in the earlier @media block near the top of the file) so
+       it doesn't repeat the exact same source-order/specificity issue that
+       silently broke the .panel max-height fix earlier in this session. */
+  }
   .prop-scroll{overflow-y:auto;overflow-x:auto;min-height:0;flex:1 1 auto;}
   .prop-table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:11.5px;}
   .prop-table th{position:sticky;top:0;background:var(--surface);font-size:9px;text-transform:uppercase;
@@ -1609,7 +1636,16 @@ function renderPropagation(){
 function drawPropPie(tally, total){
   const canvas = document.getElementById('propPie');
   const ctx = canvas.getContext('2d');
-  const size = 90, cx = size/2, cy = size/2, r = size/2 - 2;
+  // Small on wide/multi-column screens, 3x bigger only once collapsed to a
+  // single column (matching the same breakpoint the layout itself uses) —
+  // this needs to be decided here, at draw time, rather than baked into the
+  // canvas's HTML attributes, since it has to respond to the current width.
+  const isCollapsed = window.innerWidth <= 1650;
+  const size = isCollapsed ? 270 : 90;
+  if (canvas.width !== size || canvas.height !== size){
+    canvas.width = size; canvas.height = size;
+  }
+  const cx = size/2, cy = size/2, r = size/2 - (isCollapsed ? 4 : 2);
   ctx.clearRect(0,0,size,size);
   const entries = Object.entries(tally).sort((a,b) => b[1]-a[1]);
   const top = entries.slice(0,6);
@@ -2269,7 +2305,7 @@ document.getElementById('propScope').addEventListener('change', async () => {
   }
 });
 document.getElementById('refreshBtn').addEventListener('click', () => spinRefreshBtn(async ()=>{ await refreshChain(); await refreshMarket(); }));
-window.addEventListener('resize', () => { if (state.blocks.length) drawRing(); drawMempoolChart(); alignRbfPanelHeight(); });
+window.addEventListener('resize', () => { if (state.blocks.length) drawRing(); drawMempoolChart(); alignRbfPanelHeight(); renderPropagation(); });
 
 // ── Time zone selector ───────────────────────────────────────────────────
 const TZ_GROUPS = [
