@@ -1798,20 +1798,35 @@ function drawMempoolChart(){
   const pad = 6;
 
   // Vertical markers where a block actually landed within this chart's time
-  // range, so the count trend can be read alongside when blocks arrived —
-  // directly what was asked for, using timestamps we already have rather
-  // than assuming evenly-spaced samples.
+  // range, each labeled with its own height — spaced out to avoid label
+  // overlap rather than labeling every single line, since a full window can
+  // hold 15-20+ blocks. Positions come straight from real timestamps against
+  // the rolling [t0,t1] window, so as older blocks age out of that window
+  // each redraw, their lines/labels naturally scroll off the left, and newly
+  // arrived blocks appear at the right — no separate animation needed.
   const t0 = hist[0].ts, t1 = hist[hist.length-1].ts;
-  if (t1 > t0){
-    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
-    ctx.lineWidth = 1;
-    state.blocks.forEach(b => {
-      if (b.ts < t0 || b.ts > t1) return;
+  const inWindow = t1 > t0 ? state.blocks.filter(b => b.ts >= t0 && b.ts <= t1) : [];
+  if (inWindow.length){
+    ctx.font = '9px "JetBrains Mono", monospace';
+    ctx.textBaseline = 'bottom';
+    ctx.textAlign = 'center';
+    const MIN_LABEL_GAP = 55; // px between label centers
+    const labelHalfWidth = 22; // enough to keep a "#123,456" label on-canvas at the edges
+    let lastLabelX = -Infinity;
+    inWindow.forEach(b => {
       const x = pad + ((b.ts - t0)/(t1 - t0)) * (w - pad*2);
+      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+      ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(x, pad);
       ctx.lineTo(x, h - pad);
       ctx.stroke();
+      if (x - lastLabelX >= MIN_LABEL_GAP){
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        const labelX = Math.max(pad + labelHalfWidth, Math.min(w - pad - labelHalfWidth, x));
+        ctx.fillText('#' + fmtN(b.height), labelX, h - 2);
+        lastLabelX = x;
+      }
     });
   }
 
