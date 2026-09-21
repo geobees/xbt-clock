@@ -1032,7 +1032,12 @@ function mapRawBlock(b){
     weight: b.weight || null,
     txCount: b.tx_count,
     pool: (b.extras && b.extras.pool && b.extras.pool.name) ? b.extras.pool.name : null,
-    difficulty: typeof b.difficulty === 'number' ? b.difficulty : null,
+    // mempool.guide's own pre-computed "difficulty" field is unreliable for
+    // this chain (confirmed off by roughly 2^32x against a reference
+    // explorer) — bits is the raw compact target straight from the block
+    // header, a far more fundamental value, so we compute difficulty
+    // ourselves from it via bitsToDifficulty() instead of trusting theirs.
+    bits: b.bits || null,
     // Pre-computed by mempool.guide itself, server-side — this is why the
     // Latest Blocks cards below don't need to fetch/parse every transaction
     // the way KV5's raw-RPC version did (getblock verbose 2 + per-tx fee
@@ -1041,6 +1046,27 @@ function mapRawBlock(b){
     totalFees: (b.extras && typeof b.extras.totalFees === 'number') ? b.extras.totalFees : null,
     reward: (b.extras && typeof b.extras.reward === 'number') ? b.extras.reward : null,
   };
+}
+// Standard Bitcoin difficulty formula, computed locally from the raw compact
+// target (bits) rather than trusting any pre-computed "difficulty" field —
+// confirmed against a reference explorer (Lazarus Mempool) that this chain
+// uses the conventional SHA256-era difficulty-1 reference constant, same as
+// real Bitcoin, since it inherits Bitcoin's actual pre-fork chain history.
+const DIFF1_TARGET = 0x00ffffn * (256n ** BigInt(0x1d - 3));
+function bitsToDifficulty(bits){
+  if (bits == null) return null;
+  const bitsNum = typeof bits === 'string' ? parseInt(bits, 16) : bits;
+  if (!isFinite(bitsNum) || bitsNum <= 0) return null;
+  const exponent = bitsNum >>> 24;
+  const mantissa = BigInt(bitsNum & 0xffffff);
+  if (mantissa === 0n || exponent < 3) return null;
+  const target = mantissa * (256n ** BigInt(exponent - 3));
+  if (target === 0n) return null;
+  // Ratio of two similarly-scaled BigInts — converting each to Number loses
+  // some precision at this magnitude, but it cancels out in the division,
+  // leaving plenty of accuracy for a value that's only ever displayed
+  // rounded to a few significant figures.
+  return Number(DIFF1_TARGET) / Number(target);
 }
 function finalizeBlocks(normalizedArr){
   const seen = new Map();
@@ -1451,7 +1477,12 @@ function render(){
 
   // Top-left: hashrate / post-fork supply / era
   document.getElementById('st-hashrate').textContent = isLive ? fmtHashrate(state.hashrate) : '—';
-  document.getElementById('st-difficulty').textContent = isLive ? fmtDifficulty(state.currentDifficulty) : '—';
+  document.getElementById('st-difficulty').textContent = isLive && lastBlock ? fmtDifficulty(bitsToDifficulty(lastBlock.bits)) : '—';
+  // Sourced from the block object's own difficulty field (derived directly
+  // from that block's bits/target) rather than the hashrate/3d endpoint's
+  // currentDifficulty aggregate — that field was returning a value ~2^32x
+  // too large for this chain, a classic difficulty-calculation bug
+  // upstream in mempool.guide, not something wrong in our own formatting.
   // "Supply" here is coins mined SINCE the BLAKE2b fork only — the pre-fork
   // supply was inherited from Bitcoin, not mined on this chain. Expressed as
   // a share of however much is still left to mine post-fork (a constant,
@@ -2078,7 +2109,7 @@ function bpRenderBlockDetail(d){
     ['Timestamp', new Date(d.timestamp*1000).toLocaleString('en-US',{timeZone:state.selectedTZ})],
     ['Size / Weight', fmtBytes(d.size) + ' / ' + fmtN(d.weight) + ' WU'],
     ['Transactions', fmtN(d.tx_count)],
-    ['Difficulty', fmtDifficulty(d.difficulty)],
+    ['Difficulty', fmtDifficulty(bitsToDifficulty(d.bits))],
     ['Mining pool', (extras.pool && extras.pool.name) || 'Unknown'],
     ['Fee range', feeRange ? feeRange[0].toFixed(2) + ' – ' + feeRange[feeRange.length-1].toFixed(2) + ' sat/vB' : '—'],
     ['Median fee', typeof extras.medianFee === 'number' ? extras.medianFee.toFixed(2) + ' sat/vB' : '—'],
