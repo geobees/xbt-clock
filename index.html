@@ -823,15 +823,19 @@ const SOURCES = {
 
 // Published output of the separate xbt-crawler project (a P2P network
 // crawler seeded from a local XBT node's RPC — see that project for how
-// this file is produced). Same-origin static JSON, not a live API: it only
-// changes when someone manually runs the crawler and republishes the file
-// alongside this page. 404s are expected until that's set up — the panel
-// just stays in its "awaiting data" state. Update this path if you publish
-// crawl-latest.json somewhere other than next to index.html.
+// these files are produced). Same-origin static JSON, not a live API: they
+// only change when someone manually runs `node publish.js` and it pushes
+// fresh output. 404s are expected until that's set up — the panel just
+// stays in its "awaiting data" state. Update these paths if you publish
+// them somewhere other than next to index.html.
+//   - NODE_CRAWL_URL: latest single snapshot (current stats + peer list)
+//   - NODE_HISTORY_URL: compact rolling history (one entry per run) —
+//     published server-side so the trend chart shows the same real history
+//     to every visitor, not just whatever a single browser has locally
+//     accumulated via localStorage.
 const NODE_CRAWL_URL = './crawl-latest.json';
+const NODE_HISTORY_URL = './crawl-history.json';
 const NODE_CRAWL_REFRESH_MS = 5 * 60 * 1000; // crawl data is slow-moving — no need for 5s polling
-const NODE_HISTORY_CACHE_KEY = 'xbtClockNodeHistory_v1';
-const NODE_HISTORY_MAX_POINTS = 200;
 
 // All three sources above lack (or actively block) the
 // Access-Control-Allow-Origin header a browser needs to read a cross-origin
@@ -878,23 +882,11 @@ function persistBlocks(){
 }
 state.blocks = loadCachedBlocks();
 
-// Same caching pattern as the blocks cache above, but for node-count crawl
-// snapshots: each time a genuinely new crawl-latest.json is fetched, one
-// point gets appended so the chart can show a trend across runs rather
-// than just the latest single number.
-function loadNodeHistory(){
-  try {
-    const raw = localStorage.getItem(NODE_HISTORY_CACHE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (e){ return []; }
-}
-function persistNodeHistory(){
-  try { localStorage.setItem(NODE_HISTORY_CACHE_KEY, JSON.stringify(nodeHistory)); }
-  catch (e){ /* storage full or unavailable — skip silently */ }
-}
-let nodeHistory = loadNodeHistory();
+// Node-count history for the chart — populated from the server-published
+// crawl-history.json (see fetchNodeHistory below), not localStorage, so
+// every visitor sees the same real trend rather than one that only starts
+// accumulating from whenever their own browser first loaded the page.
+let nodeHistory = [];
 
 const romanNumerals = ['0','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV'];
 
@@ -1857,18 +1849,35 @@ function renderMempoolPanel(){
 }
 // ── XBT Network Nodes (fed by the separate xbt-crawler project) ──────────
 async function fetchNodeCrawl(){
+  await Promise.all([fetchNodeLatest(), fetchNodeHistory()]);
+}
+
+async function fetchNodeLatest(){
   try {
     const res = await fetch(NODE_CRAWL_URL, { cache: 'no-store' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    renderNodePanel(data);
+    renderNodeStats(data);
   } catch (e){
-    // No published crawl file yet (or NODE_CRAWL_URL not pointed at one) —
-    // leave the panel in its default "—" state rather than erroring.
+    // No published snapshot yet (or NODE_CRAWL_URL not pointed at one) —
+    // leave the stats in their default "—" state rather than erroring.
   }
 }
 
-function renderNodePanel(data){
+async function fetchNodeHistory(){
+  try {
+    const res = await fetch(NODE_HISTORY_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    nodeHistory = Array.isArray(data) ? data : [];
+  } catch (e){
+    nodeHistory = []; // no published history yet — chart just stays empty
+  }
+  drawNodeChart();
+  alignNodePanelHeight();
+}
+
+function renderNodeStats(data){
   const stats = data.stats || {};
   const peers = Array.isArray(data.peers) ? data.peers : [];
   const confirmed = typeof stats.xbtConfirmed === 'number' ? stats.xbtConfirmed : peers.length;
@@ -1887,18 +1896,6 @@ function renderNodePanel(data){
     ? d.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
     : '—';
 
-  // Append one history point per genuinely new crawl (keyed on the
-  // snapshot's own generatedAt) rather than once per fetch, so re-polling
-  // the same unchanged file every NODE_CRAWL_REFRESH_MS doesn't pad the
-  // chart with duplicate flat points.
-  const last = nodeHistory[nodeHistory.length - 1];
-  if (data.generatedAt && (!last || last.ts !== data.generatedAt)){
-    nodeHistory.push({ ts: data.generatedAt, count: confirmed });
-    if (nodeHistory.length > NODE_HISTORY_MAX_POINTS) nodeHistory = nodeHistory.slice(-NODE_HISTORY_MAX_POINTS);
-    persistNodeHistory();
-  }
-
-  drawNodeChart();
   alignNodePanelHeight();
 }
 
@@ -1913,14 +1910,14 @@ function drawNodeChart(){
   const ctx = canvas.getContext('2d');
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,w,h);
-  if (nodeHistory.length < 2) return; // need at least two crawl runs to draw a trend
-  const counts = nodeHistory.map(p => p.count);
+  if (nodeHistory.length < 2) return; // need at least two published runs to draw a trend
+  const counts = nodeHistory.map(p => p.xbtConfirmed);
   const min = Math.min(...counts), max = Math.max(...counts, min+1);
   const pad = 6;
   ctx.beginPath();
   nodeHistory.forEach((p,i) => {
     const x = pad + (i/(nodeHistory.length-1)) * (w - pad*2);
-    const y = h - pad - ((p.count-min)/(max-min)) * (h - pad*2);
+    const y = h - pad - ((p.xbtConfirmed-min)/(max-min)) * (h - pad*2);
     i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
   });
   ctx.strokeStyle = '#00d4aa';
