@@ -30,8 +30,9 @@ A live single-page dashboard for **Bitcoin BLAKE2b (XBT)** — the BIP-110 hardf
 - **Transaction Fees** — the four priority tiers (No/Low/Medium/High) in sat/vB with a USD estimate for a typical transaction.
 - **Mempool** — minimum fee, memory usage, unconfirmed tx count, and a live-accumulated Incoming Transactions chart (no history endpoint — built from the page's own polling over time).
 - **Recent Replacements** — RBF (replace-by-fee) chains, showing the previous vs. new fee rate and whether the replacement has been mined; TXIDs are clickable too.
+- **XBT Network Nodes** — confirmed reachable node count, peers probed, and IPv6 share, plus a history chart tracking the confirmed count over time. Fed by a separate project, [xbt-crawler](../xbt-crawler) — a P2P network crawler seeded from a local XBT node's RPC that fingerprints peers by chain data (not user-agent, which isn't reliable for a fork sharing Bitcoin mainnet's magic bytes/port) — not a live API. See [Node data](#node-data) below.
 
-On screens under ~820px wide, the header collapses behind a hamburger menu (status, time zone, sound, refresh) so it never overlaps or overflows on phones/tablets. Loaded block history is cached in `localStorage`, so a manual browser refresh doesn't force a full multi-page backfill again — it picks up where it left off and just fetches whatever's new.
+On screens under ~820px wide, the header collapses behind a hamburger menu (status, time zone, sound, refresh) so it never overlaps or overflows on phones/tablets. Loaded block history is cached in `localStorage`, so a manual browser refresh doesn't force a full multi-page backfill again — it picks up where it left off and just fetches whatever's new. The node-count history chart is *not* `localStorage`-based — it's built from a published history file (see [Node data](#node-data)) so every visitor sees the same trend, not just whatever a given browser has locally accumulated.
 
 No build step, no framework, no dependencies — it's one `.html` file. Open it locally or host it anywhere that serves static files.
 
@@ -44,6 +45,26 @@ No build step, no framework, no dependencies — it's one `.html` file. Open it 
 | [api.nonkyc.io](https://api.nonkyc.io)            | XBT/USDT ticker (internal query parameter `BTCB2_USDT`)                                                                                                                                                                                                  | None |
 
 All three sources are public/no-auth, but **none of them send permissive CORS headers**, so a browser can't call them directly from a page hosted on a different origin. This project routes every request through a small Cloudflare Worker that fetches server-side and re-adds `Access-Control-Allow-Origin: *`.
+
+## Node data
+
+The XBT Network Nodes panel doesn't call a live API — `mempool.guide` and friends only expose chain/mempool data, not a peer-count endpoint, and no such service exists for this chain (that's the reason the panel exists at all). Instead it fetches two same-origin static files, published manually alongside `index.html`:
+
+| File                 | What it is                                                                       | Fetched by            |
+| --------------------- | --------------------------------------------------------------------------------- | ---------------------- |
+| `crawl-latest.json`   | The most recent crawl snapshot — current stats and the confirmed-peer list        | `fetchNodeLatest()`    |
+| `crawl-history.json`  | A compact rolling history, one entry per crawl run, capped at 365 entries         | `fetchNodeHistory()`   |
+
+Both are produced by [xbt-crawler](../xbt-crawler), a separate dependency-free Node.js project that:
+
+1. Connects to a local XBT node's RPC to seed a peer list (`getpeerinfo` + `getnodeaddresses`)
+2. Crawls the P2P network from there, speaking the Bitcoin wire protocol directly over raw sockets
+3. Fingerprints each peer by requesting a known post-fork block via `getdata` — `block` reply confirms XBT, `notfound` means it's just a real Bitcoin/Knots node that happens to share the same magic bytes and port (necessary because BTCB2 inherited Bitcoin mainnet's network identity rather than defining its own — the `version` handshake alone can't tell the two apart)
+4. Writes `crawl-latest.json` and appends one entry to `crawl-history.json`
+
+Running `node publish.js` in that project does the crawl and pushes both files into this repo in one step. Neither file updating on any particular schedule is expected — the panel just shows whatever was last published, and stays in its default `—` state (with an empty history chart) until the files exist at all.
+
+If you're not running the crawler, delete or leave the panel's `<div class="panel" id="nodePanel">` block out of `index.html` — it fails closed (silently) rather than showing broken/fake data.
 
 ## Setup
 
@@ -78,6 +99,8 @@ All three sources are public/no-auth, but **none of them send permissive CORS he
 
 3. **Serve the HTML file.** Any static host works (Netlify, GitHub Pages, Cloudflare Pages, or just open the file locally) — there's nothing to build.
 
+4. **(Optional) Publish node data.** For the XBT Network Nodes panel to show real numbers, run `node publish.js` from the [xbt-crawler](../xbt-crawler) project — it crawls the network and pushes `crawl-latest.json` + `crawl-history.json` into this repo. Skip this step entirely if you don't want that panel; it degrades gracefully with no data published. See [Node data](#node-data) below.
+
 ## Configuration
 
 The important constants live in `CONFIG` near the top of the `<script>` block:
@@ -92,6 +115,14 @@ The important constants live in `CONFIG` near the top of the `<script>` block:
 
 The Latest Blocks strip renders off the same `state.blocks` array the ring uses (capped to the most recent 150 cards) — it doesn't make any extra requests of its own. Opening a modal (block/transaction/address) does fetch on demand, only when you click something.
 
+Two more constants, defined near `CONFIG` but outside it (same pattern as `PROXY_PREFIX`), control the node panel:
+
+| Constant                | Meaning                                                                 |
+| ------------------------ | ------------------------------------------------------------------------ |
+| `NODE_CRAWL_URL`          | Path to `crawl-latest.json`, default `./crawl-latest.json`               |
+| `NODE_HISTORY_URL`        | Path to `crawl-history.json`, default `./crawl-history.json`             |
+| `NODE_CRAWL_REFRESH_MS`   | How often the page re-polls both files (5 min default — crawl data is slow-moving, no need to match the 5s chain refresh) |
+
 ## Capacity
 
 At the default 5-second refresh intervals, one continuously-open tab makes roughly **104,000 requests/day** through the Worker — that's already past Cloudflare's free-plan cap of 100,000 requests/day with just one viewer. This project runs on **Workers Paid** ($5/mo, 10M requests included), which comfortably covers that. If you'd rather stay on the free plan, lengthen `REFRESH_CHAIN_MS`/`REFRESH_MARKET_MS` (10-15s still feels quite live and cuts the volume by half to two-thirds) instead of upgrading. Modal lookups (block/tx/address detail) are on-demand and add negligible extra load.
@@ -104,6 +135,7 @@ At the default 5-second refresh intervals, one continuously-open tab makes rough
 - The coinbase transaction in each block's Transactions tab is detected via `vin[0].is_coinbase` and shown with the block's own pool attribution rather than an input list (it has no real inputs to show).
 - Block-level extras (pool name, fee range) require the `/v1/` prefixed endpoint specifically — the plain `/block/:hash` endpoint doesn't include them.
 - API endpoint field names for NonKYC were reverse-engineered against their public v2 market endpoint rather than sourced from published docs — if their schema changes, that fetch degrades gracefully to `—` rather than breaking the page.
+- The node count shown is a **lower bound**, not a guaranteed total — it's whatever the crawler's last run could actually reach and confirm. Since BTCB2 shares Bitcoin mainnet's magic bytes and port (see above), most alive peers a crawl encounters are real Bitcoin/Knots nodes, not XBT ones — this is expected, not a bug in the confirmed count.
 
 ## License
 
