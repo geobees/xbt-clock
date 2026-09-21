@@ -428,6 +428,7 @@
   .mp-chart-lab{font-size:9.5px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);
     padding:10px 16px 0;}
   .mp-chart{width:100%;height:100px;display:block;}
+  .node-updated{font-size:9.5px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
 
   /* ── Recent Replacements badges ── */
   .rbf-badge{display:block;font-size:9px;font-weight:600;text-transform:uppercase;
@@ -633,6 +634,17 @@
     <input type="range" id="scrubSlider" min="0" max="0" value="0" step="1">
     <div class="scrub-live-pill live" id="livePill">● LIVE</div>
   </div>
+
+  <div class="panel" id="nodePanel" style="margin-top:16px;">
+    <div class="panel-head"><span>XBT Network Nodes</span><span class="node-updated" id="nodeUpdated">—</span></div>
+    <div class="mp-stats">
+      <div class="mp-stat"><div class="mp-lab">Confirmed nodes</div><div class="mp-val" id="nodeCount">—</div></div>
+      <div class="mp-stat"><div class="mp-lab">Peers probed</div><div class="mp-val" id="nodeProbed">—</div></div>
+      <div class="mp-stat"><div class="mp-lab">IPv6 share</div><div class="mp-val" id="nodeIpv6">—</div></div>
+    </div>
+    <div class="mp-chart-lab">Node count history</div>
+    <canvas id="nodeChart" class="mp-chart"></canvas>
+  </div>
     </div>
 
     <div class="panels-row" id="mempoolCol">
@@ -809,6 +821,18 @@ const SOURCES = {
   nonkyc:  'https://api.nonkyc.io/api/v2',
 };
 
+// Published output of the separate xbt-crawler project (a P2P network
+// crawler seeded from a local XBT node's RPC — see that project for how
+// this file is produced). Same-origin static JSON, not a live API: it only
+// changes when someone manually runs the crawler and republishes the file
+// alongside this page. 404s are expected until that's set up — the panel
+// just stays in its "awaiting data" state. Update this path if you publish
+// crawl-latest.json somewhere other than next to index.html.
+const NODE_CRAWL_URL = './crawl-latest.json';
+const NODE_CRAWL_REFRESH_MS = 5 * 60 * 1000; // crawl data is slow-moving — no need for 5s polling
+const NODE_HISTORY_CACHE_KEY = 'xbtClockNodeHistory_v1';
+const NODE_HISTORY_MAX_POINTS = 200;
+
 // All three sources above lack (or actively block) the
 // Access-Control-Allow-Origin header a browser needs to read a cross-origin
 // response, so a static page can't call them directly. Point this at a
@@ -853,6 +877,24 @@ function persistBlocks(){
   catch (e){ /* storage full or unavailable (e.g. private browsing) — skip silently */ }
 }
 state.blocks = loadCachedBlocks();
+
+// Same caching pattern as the blocks cache above, but for node-count crawl
+// snapshots: each time a genuinely new crawl-latest.json is fetched, one
+// point gets appended so the chart can show a trend across runs rather
+// than just the latest single number.
+function loadNodeHistory(){
+  try {
+    const raw = localStorage.getItem(NODE_HISTORY_CACHE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e){ return []; }
+}
+function persistNodeHistory(){
+  try { localStorage.setItem(NODE_HISTORY_CACHE_KEY, JSON.stringify(nodeHistory)); }
+  catch (e){ /* storage full or unavailable — skip silently */ }
+}
+let nodeHistory = loadNodeHistory();
 
 const romanNumerals = ['0','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV'];
 
@@ -1578,6 +1620,7 @@ function render(){
   bpRenderAll(bpNewBlockPending);
   bpNewBlockPending = false;
   alignRbfPanelHeight();
+  alignNodePanelHeight();
 }
 
 // ── "Since last block" feed ──────────────────────────────────────────────
@@ -1812,6 +1855,106 @@ function renderMempoolPanel(){
   }
   drawMempoolChart();
 }
+// ── XBT Network Nodes (fed by the separate xbt-crawler project) ──────────
+async function fetchNodeCrawl(){
+  try {
+    const res = await fetch(NODE_CRAWL_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    renderNodePanel(data);
+  } catch (e){
+    // No published crawl file yet (or NODE_CRAWL_URL not pointed at one) —
+    // leave the panel in its default "—" state rather than erroring.
+  }
+}
+
+function renderNodePanel(data){
+  const stats = data.stats || {};
+  const peers = Array.isArray(data.peers) ? data.peers : [];
+  const confirmed = typeof stats.xbtConfirmed === 'number' ? stats.xbtConfirmed : peers.length;
+
+  document.getElementById('nodeCount').textContent = fmtN(confirmed);
+  document.getElementById('nodeProbed').textContent =
+    typeof stats.totalProbed === 'number' ? fmtN(stats.totalProbed) : '—';
+
+  const ipv6Count = peers.filter(p => typeof p.ip === 'string' && p.ip.includes(':')).length;
+  document.getElementById('nodeIpv6').textContent =
+    peers.length ? Math.round(100 * ipv6Count / peers.length) + '%' : '—';
+
+  const updatedEl = document.getElementById('nodeUpdated');
+  const d = data.generatedAt ? new Date(data.generatedAt) : null;
+  updatedEl.textContent = (d && !isNaN(d))
+    ? d.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    : '—';
+
+  // Append one history point per genuinely new crawl (keyed on the
+  // snapshot's own generatedAt) rather than once per fetch, so re-polling
+  // the same unchanged file every NODE_CRAWL_REFRESH_MS doesn't pad the
+  // chart with duplicate flat points.
+  const last = nodeHistory[nodeHistory.length - 1];
+  if (data.generatedAt && (!last || last.ts !== data.generatedAt)){
+    nodeHistory.push({ ts: data.generatedAt, count: confirmed });
+    if (nodeHistory.length > NODE_HISTORY_MAX_POINTS) nodeHistory = nodeHistory.slice(-NODE_HISTORY_MAX_POINTS);
+    persistNodeHistory();
+  }
+
+  drawNodeChart();
+  alignNodePanelHeight();
+}
+
+function drawNodeChart(){
+  const canvas = document.getElementById('nodeChart');
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth, h = canvas.clientHeight || 100;
+  if (canvas.width !== w*dpr || canvas.height !== h*dpr){
+    canvas.width = w*dpr; canvas.height = h*dpr;
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  if (nodeHistory.length < 2) return; // need at least two crawl runs to draw a trend
+  const counts = nodeHistory.map(p => p.count);
+  const min = Math.min(...counts), max = Math.max(...counts, min+1);
+  const pad = 6;
+  ctx.beginPath();
+  nodeHistory.forEach((p,i) => {
+    const x = pad + (i/(nodeHistory.length-1)) * (w - pad*2);
+    const y = h - pad - ((p.count-min)/(max-min)) * (h - pad*2);
+    i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle = '#00d4aa';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+}
+
+// Sizes the node panel so its bottom lines up with whichever side column —
+// the mempool column or the metrics column — currently extends furthest
+// down, using the same measure-and-set-height technique as
+// alignRbfPanelHeight() above (a pure-CSS approach can't do this since the
+// clock column's natural height has nothing to do with the side columns').
+// Only meaningful in the 3-column desktop layout; below that breakpoint
+// everything stacks and natural sizing is fine, so it's a no-op there.
+function alignNodePanelHeight(){
+  const panel = document.getElementById('nodePanel');
+  const mempoolCol = document.getElementById('mempoolCol');
+  const recentTx = document.getElementById('recentTxPanel');
+  if (!panel || !mempoolCol || !recentTx) return;
+  if (window.innerWidth <= 1650){
+    panel.style.height = '';
+    panel.style.maxHeight = '';
+    return;
+  }
+  const rightCol = recentTx.closest('.panels-row');
+  const bottoms = [mempoolCol, rightCol].filter(Boolean)
+    .map(el => el.getBoundingClientRect().bottom);
+  const maxBottom = Math.max(...bottoms);
+  const panelTop = panel.getBoundingClientRect().top;
+  const target = Math.max(140, Math.round(maxBottom - panelTop));
+  panel.style.height = target + 'px';
+  panel.style.maxHeight = target + 'px';
+}
+
 function drawMempoolChart(){
   const canvas = document.getElementById('mpChart');
   const dpr = window.devicePixelRatio || 1;
@@ -2351,7 +2494,7 @@ document.getElementById('propScope').addEventListener('change', async () => {
   }
 });
 document.getElementById('refreshBtn').addEventListener('click', () => spinRefreshBtn(async ()=>{ await refreshChain(); await refreshMarket(); }));
-window.addEventListener('resize', () => { if (state.blocks.length) drawRing(); drawMempoolChart(); alignRbfPanelHeight(); renderPropagation(); });
+window.addEventListener('resize', () => { if (state.blocks.length) drawRing(); drawMempoolChart(); alignRbfPanelHeight(); renderPropagation(); drawNodeChart(); alignNodePanelHeight(); });
 
 // ── Time zone selector ───────────────────────────────────────────────────
 const TZ_GROUPS = [
@@ -2569,8 +2712,10 @@ initHamburgerMenu();
 bpInitNav();
 bpInitModal();
 refreshChain().then(refreshMarket);
+fetchNodeCrawl();
 setInterval(refreshChain, CONFIG.REFRESH_CHAIN_MS);
 setInterval(refreshMarket, CONFIG.REFRESH_MARKET_MS);
+setInterval(fetchNodeCrawl, NODE_CRAWL_REFRESH_MS);
 setInterval(() => { if (state.scrubIndex < 0) render(); }, 1000); // keep the live clock ticking
 </script>
 </body>
