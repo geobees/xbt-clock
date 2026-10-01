@@ -76,9 +76,9 @@
   /* ═══ Latest Blocks (adapted from KV5's latest-blocks strip; cards sized
      15% down from the original 127×164) ═══ */
   .bp-wrap{position:relative;margin-bottom:20px;}
-  .bp-scroll{display:flex;gap:14px;overflow-x:auto;padding:16px 8px 16px 12px;
+  .bp-scroll{display:flex;gap:18px;overflow-x:auto;padding:21px 10px 21px 16px;
     scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent;
-    overscroll-behavior-x:contain;height:189px;align-items:flex-start;}
+    overscroll-behavior-x:contain;height:246px;align-items:flex-start;}
   .bp-scroll::-webkit-scrollbar{height:4px;}
   .bp-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
 
@@ -86,13 +86,13 @@
     0%,100%{background:rgba(245,140,35,.08);border-color:rgba(245,140,35,.4);}
     50%{background:rgba(245,140,35,.16);border-color:rgba(255,170,60,.75);}
   }
-  .bp-pending{flex-shrink:0;width:108px;height:139px;border:1px dashed rgba(245,140,35,.55);
-    border-radius:9px;padding:9px;cursor:default;position:relative;overflow:hidden;
+  .bp-pending{flex-shrink:0;width:140px;height:181px;border:1px dashed rgba(245,140,35,.55);
+    border-radius:12px;padding:12px;cursor:default;position:relative;overflow:hidden;
     animation:bp-pulse 2.4s ease-in-out infinite;}
 
-  .bp-block{flex-shrink:0;width:108px;height:139px;background:var(--surface2);
-    border:1px solid var(--border2);border-radius:9px;
-    padding:9px 9px 14px 9px;cursor:pointer;position:relative;margin-top:14px;margin-right:12px;
+  .bp-block{flex-shrink:0;width:140px;height:181px;background:var(--surface2);
+    border:1px solid var(--border2);border-radius:12px;
+    padding:12px 12px 18px 12px;cursor:pointer;position:relative;margin-top:18px;margin-right:16px;
     transition:border-color .2s ease,background .2s ease;}
   .bp-block:hover{background:var(--surface);border-color:rgba(0,212,170,.5);}
 
@@ -100,32 +100,32 @@
     0%{background:rgba(255,165,55,.22);border-color:rgba(255,170,60,.8);}
     100%{background:var(--surface2);border-color:var(--border2);}
   }
-  @keyframes bp-pending-in{from{opacity:0;transform:translateX(-26px) scale(.92);}to{opacity:1;transform:translateX(0) scale(1);}}
+  @keyframes bp-pending-in{from{opacity:0;transform:translateX(-34px) scale(.92);}to{opacity:1;transform:translateX(0) scale(1);}}
   .bp-block.morphing{animation:bp-morph 0.6s ease-out forwards;}
   .bp-pending.entering{animation:bp-pending-in 0.5s ease-out forwards;}
 
-  .bp-height{font-size:14px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent);margin-bottom:5px;}
-  .bp-pending-lbl{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#f5a623;opacity:.9;margin-bottom:4px;}
-  .bp-fee-bar{height:3px;border-radius:2px;margin-bottom:5px;
+  .bp-height{font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent);margin-bottom:7px;}
+  .bp-pending-lbl{font-size:14px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#f5a623;opacity:.9;margin-bottom:5px;}
+  .bp-fee-bar{height:4px;border-radius:2px;margin-bottom:7px;
     background:linear-gradient(90deg,rgba(0,212,170,.6),rgba(245,166,35,.8));box-shadow:0 1px 3px rgba(0,212,170,.3);}
-  .bp-fee-txt{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);margin-bottom:7px;line-height:1.3;}
-  .bp-fee-range{color:var(--accent2);font-size:8px;}
-  .bp-value-line{display:flex;align-items:baseline;gap:3px;margin-bottom:2px;}
-  .bp-value{font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text);white-space:nowrap;}
-  .bp-value-unit{font-size:8px;color:var(--muted);white-space:nowrap;}
-  .bp-meta-line{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text);margin-top:5px;
+  .bp-fee-txt{font-size:13px;font-family:'JetBrains Mono',monospace;color:var(--muted);margin-bottom:9px;line-height:1.3;}
+  .bp-fee-range{color:var(--accent2);font-size:10px;}
+  .bp-value-line{display:flex;align-items:baseline;gap:4px;margin-bottom:3px;}
+  .bp-value{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text);white-space:nowrap;}
+  .bp-value-unit{font-size:10px;color:var(--muted);white-space:nowrap;}
+  .bp-meta-line{font-size:13px;font-family:'JetBrains Mono',monospace;color:var(--text);margin-top:7px;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .bp-age{color:var(--muted);}
-  .bp-pool{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent2);margin-top:5px;
-    display:flex;align-items:center;gap:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .bp-pool-dot{width:7px;height:7px;border-radius:50%;background:var(--accent2);flex-shrink:0;}
-  .bp-size-bar{position:absolute;bottom:0;left:0;right:0;height:9px;border-radius:0 0 7px 7px;background:rgba(255,255,255,.06);}
-  .bp-size-fill{height:100%;border-radius:0 0 7px 7px;background:rgba(255,255,255,.18);transition:width .3s;}
-  .bp-nav{display:flex;align-items:center;justify-content:space-between;margin-top:6px;gap:6px;flex-wrap:wrap;}
+  .bp-pool{font-size:13px;font-family:'JetBrains Mono',monospace;color:var(--accent2);margin-top:7px;
+    display:flex;align-items:center;gap:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .bp-pool-dot{width:9px;height:9px;border-radius:50%;background:var(--accent2);flex-shrink:0;}
+  .bp-size-bar{position:absolute;bottom:0;left:0;right:0;height:12px;border-radius:0 0 9px 9px;background:rgba(255,255,255,.06);}
+  .bp-size-fill{height:100%;border-radius:0 0 9px 9px;background:rgba(255,255,255,.18);transition:width .3s;}
+  .bp-nav{display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:8px;flex-wrap:wrap;}
   .bp-nav-btn{background:var(--surface2);border:1px solid var(--border2);color:var(--muted);
-    border-radius:6px;padding:4px 9px;font-size:10px;font-family:'JetBrains Mono',monospace;cursor:pointer;}
+    border-radius:8px;padding:5px 12px;font-size:13px;font-family:'JetBrains Mono',monospace;cursor:pointer;}
   .bp-nav-btn:hover{color:var(--text);border-color:rgba(0,153,255,.4);}
-  .bp-status{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);flex:1;text-align:center;}
+  .bp-status{font-size:13px;font-family:'JetBrains Mono',monospace;color:var(--muted);flex:1;text-align:center;}
 
   /* ── Block detail modal ── */
   .bp-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;
@@ -222,7 +222,7 @@
   @media(max-width:640px){.stage{aspect-ratio:auto;min-height:560px;}}
   #ring{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;}
 
-  .window-label{position:absolute;top:20px;left:50%;transform:translateX(-50%);text-align:center;z-index:2;}
+  .window-label{position:absolute;top:10px;left:50%;transform:translateX(-50%);text-align:center;z-index:2;}
   .window-label select{appearance:none;-webkit-appearance:none;background:transparent;border:none;
     color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.4px;
     text-transform:uppercase;text-align:center;cursor:pointer;text-align-last:center;
@@ -821,6 +821,16 @@ const SOURCES = {
   nonkyc:  'https://api.nonkyc.io/api/v2',
 };
 
+// All three sources above lack (or actively block) the
+// Access-Control-Allow-Origin header a browser needs to read a cross-origin
+// response, so a static page can't call them directly. Point this at a
+// same-origin relay you control (e.g. the ~15-line Cloudflare Worker in the
+// build notes) that fetches server-side and re-adds the CORS header.
+// Format: PROXY_PREFIX + encodeURIComponent(targetUrl)
+// Leave '' to call the sources directly (only works if CORS is ever fixed
+// upstream, or you're serving this page from a domain they explicitly allow).
+const PROXY_PREFIX = 'https://btcb2-proxy.txminers.workers.dev/?url=';
+
 // Published output of the separate xbt-crawler project (a P2P network
 // crawler seeded from a local XBT node's RPC — see that project for how
 // these files are produced). Same-origin static JSON, not a live API: they
@@ -836,16 +846,6 @@ const SOURCES = {
 const NODE_CRAWL_URL = './crawl-latest.json';
 const NODE_HISTORY_URL = './crawl-history.json';
 const NODE_CRAWL_REFRESH_MS = 5 * 60 * 1000; // crawl data is slow-moving — no need for 5s polling
-
-// All three sources above lack (or actively block) the
-// Access-Control-Allow-Origin header a browser needs to read a cross-origin
-// response, so a static page can't call them directly. Point this at a
-// same-origin relay you control (e.g. the ~15-line Cloudflare Worker in the
-// build notes) that fetches server-side and re-adds the CORS header.
-// Format: PROXY_PREFIX + encodeURIComponent(targetUrl)
-// Leave '' to call the sources directly (only works if CORS is ever fixed
-// upstream, or you're serving this page from a domain they explicitly allow).
-const PROXY_PREFIX = 'https://btcb2-proxy.txminers.workers.dev/?url=';
 
 let state = {
   tipHeight: null,
@@ -1319,7 +1319,18 @@ function drawRing(){
   ctx.setTransform(dpr,0,0,dpr,0,0);
   const W = canvas.width / dpr, H = canvas.height / dpr;
   const cx = W/2, cy = H/2;
-  const R = Math.min(W,H) * 0.40;
+  let R = Math.min(W,H) * 0.40;
+  if (window.innerWidth > 1650){
+    // Wide/multi-column layout only: the stage sits in a smaller 630px box here,
+    // so the ring's top edge (and the "now" label drawn 30px above it) was
+    // landing on the same row as the window-selector dropdown. Capping the
+    // radius at half the stage height minus 66px opens ~6px of clearance
+    // between the dropdown (now 10px below the stage top) and the label,
+    // shrinking the ring by only about 1% on the 630px stage. The collapsed/
+    // single-column (750px) and narrow/mobile stages have room to spare and
+    // are left exactly as they were — this cap never binds there.
+    R = Math.min(R, H/2 - 66);
+  }
   ctx.clearRect(0,0,W,H);
 
   if (ringLogoReady){
@@ -1847,111 +1858,6 @@ function renderMempoolPanel(){
   }
   drawMempoolChart();
 }
-// ── XBT Network Nodes (fed by the separate xbt-crawler project) ──────────
-async function fetchNodeCrawl(){
-  await Promise.all([fetchNodeLatest(), fetchNodeHistory()]);
-}
-
-async function fetchNodeLatest(){
-  try {
-    const res = await fetch(NODE_CRAWL_URL, { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    renderNodeStats(data);
-  } catch (e){
-    // No published snapshot yet (or NODE_CRAWL_URL not pointed at one) —
-    // leave the stats in their default "—" state rather than erroring.
-  }
-}
-
-async function fetchNodeHistory(){
-  try {
-    const res = await fetch(NODE_HISTORY_URL, { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    nodeHistory = Array.isArray(data) ? data : [];
-  } catch (e){
-    nodeHistory = []; // no published history yet — chart just stays empty
-  }
-  drawNodeChart();
-  alignNodePanelHeight();
-}
-
-function renderNodeStats(data){
-  const stats = data.stats || {};
-  const peers = Array.isArray(data.peers) ? data.peers : [];
-  const confirmed = typeof stats.xbtConfirmed === 'number' ? stats.xbtConfirmed : peers.length;
-
-  document.getElementById('nodeCount').textContent = fmtN(confirmed);
-  document.getElementById('nodeProbed').textContent =
-    typeof stats.totalProbed === 'number' ? fmtN(stats.totalProbed) : '—';
-
-  const ipv6Count = peers.filter(p => typeof p.ip === 'string' && p.ip.includes(':')).length;
-  document.getElementById('nodeIpv6').textContent =
-    peers.length ? Math.round(100 * ipv6Count / peers.length) + '%' : '—';
-
-  const updatedEl = document.getElementById('nodeUpdated');
-  const d = data.generatedAt ? new Date(data.generatedAt) : null;
-  updatedEl.textContent = (d && !isNaN(d))
-    ? d.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-    : '—';
-
-  alignNodePanelHeight();
-}
-
-function drawNodeChart(){
-  const canvas = document.getElementById('nodeChart');
-  if (!canvas) return;
-  const dpr = window.devicePixelRatio || 1;
-  const w = canvas.clientWidth, h = canvas.clientHeight || 100;
-  if (canvas.width !== w*dpr || canvas.height !== h*dpr){
-    canvas.width = w*dpr; canvas.height = h*dpr;
-  }
-  const ctx = canvas.getContext('2d');
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-  ctx.clearRect(0,0,w,h);
-  if (nodeHistory.length < 2) return; // need at least two published runs to draw a trend
-  const counts = nodeHistory.map(p => p.xbtConfirmed);
-  const min = Math.min(...counts), max = Math.max(...counts, min+1);
-  const pad = 6;
-  ctx.beginPath();
-  nodeHistory.forEach((p,i) => {
-    const x = pad + (i/(nodeHistory.length-1)) * (w - pad*2);
-    const y = h - pad - ((p.xbtConfirmed-min)/(max-min)) * (h - pad*2);
-    i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-  });
-  ctx.strokeStyle = '#00d4aa';
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-}
-
-// Sizes the node panel so its bottom lines up with whichever side column —
-// the mempool column or the metrics column — currently extends furthest
-// down, using the same measure-and-set-height technique as
-// alignRbfPanelHeight() above (a pure-CSS approach can't do this since the
-// clock column's natural height has nothing to do with the side columns').
-// Only meaningful in the 3-column desktop layout; below that breakpoint
-// everything stacks and natural sizing is fine, so it's a no-op there.
-function alignNodePanelHeight(){
-  const panel = document.getElementById('nodePanel');
-  const mempoolCol = document.getElementById('mempoolCol');
-  const recentTx = document.getElementById('recentTxPanel');
-  if (!panel || !mempoolCol || !recentTx) return;
-  if (window.innerWidth <= 1650){
-    panel.style.height = '';
-    panel.style.maxHeight = '';
-    return;
-  }
-  const rightCol = recentTx.closest('.panels-row');
-  const bottoms = [mempoolCol, rightCol].filter(Boolean)
-    .map(el => el.getBoundingClientRect().bottom);
-  const maxBottom = Math.max(...bottoms);
-  const panelTop = panel.getBoundingClientRect().top;
-  const target = Math.max(140, Math.round(maxBottom - panelTop));
-  panel.style.height = target + 'px';
-  panel.style.maxHeight = target + 'px';
-}
-
 function drawMempoolChart(){
   const canvas = document.getElementById('mpChart');
   const dpr = window.devicePixelRatio || 1;
@@ -2060,6 +1966,111 @@ function alignRbfPanelHeight(){
   rbf.style.maxHeight = target + 'px';
 }
 
+// ── XBT Network Nodes (fed by the separate xbt-crawler project) ──────────
+async function fetchNodeCrawl(){
+  await Promise.all([fetchNodeLatest(), fetchNodeHistory()]);
+}
+
+async function fetchNodeLatest(){
+  try {
+    const res = await fetch(NODE_CRAWL_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    renderNodeStats(data);
+  } catch (e){
+    // No published snapshot yet (or NODE_CRAWL_URL not pointed at one) —
+    // leave the stats in their default "—" state rather than erroring.
+  }
+}
+
+async function fetchNodeHistory(){
+  try {
+    const res = await fetch(NODE_HISTORY_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    nodeHistory = Array.isArray(data) ? data : [];
+  } catch (e){
+    nodeHistory = []; // no published history yet — chart just stays empty
+  }
+  drawNodeChart();
+  alignNodePanelHeight();
+}
+
+function renderNodeStats(data){
+  const stats = data.stats || {};
+  const peers = Array.isArray(data.peers) ? data.peers : [];
+  const confirmed = typeof stats.xbtConfirmed === 'number' ? stats.xbtConfirmed : peers.length;
+
+  document.getElementById('nodeCount').textContent = fmtN(confirmed);
+  document.getElementById('nodeProbed').textContent =
+    typeof stats.totalProbed === 'number' ? fmtN(stats.totalProbed) : '—';
+
+  const ipv6Count = peers.filter(p => typeof p.ip === 'string' && p.ip.includes(':')).length;
+  document.getElementById('nodeIpv6').textContent =
+    peers.length ? Math.round(100 * ipv6Count / peers.length) + '%' : '—';
+
+  const updatedEl = document.getElementById('nodeUpdated');
+  const d = data.generatedAt ? new Date(data.generatedAt) : null;
+  updatedEl.textContent = (d && !isNaN(d))
+    ? d.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    : '—';
+
+  alignNodePanelHeight();
+}
+
+function drawNodeChart(){
+  const canvas = document.getElementById('nodeChart');
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth, h = canvas.clientHeight || 100;
+  if (canvas.width !== w*dpr || canvas.height !== h*dpr){
+    canvas.width = w*dpr; canvas.height = h*dpr;
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  if (nodeHistory.length < 2) return; // need at least two published runs to draw a trend
+  const counts = nodeHistory.map(p => p.xbtConfirmed);
+  const min = Math.min(...counts), max = Math.max(...counts, min+1);
+  const pad = 6;
+  ctx.beginPath();
+  nodeHistory.forEach((p,i) => {
+    const x = pad + (i/(nodeHistory.length-1)) * (w - pad*2);
+    const y = h - pad - ((p.xbtConfirmed-min)/(max-min)) * (h - pad*2);
+    i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle = '#00d4aa';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+}
+
+// Sizes the node panel so its bottom lines up with whichever side column —
+// the mempool column or the metrics column — currently extends furthest
+// down, using the same measure-and-set-height technique as
+// alignRbfPanelHeight() above (a pure-CSS approach can't do this since the
+// clock column's natural height has nothing to do with the side columns').
+// Only meaningful in the 3-column desktop layout; below that breakpoint
+// everything stacks and natural sizing is fine, so it's a no-op there.
+function alignNodePanelHeight(){
+  const panel = document.getElementById('nodePanel');
+  const mempoolCol = document.getElementById('mempoolCol');
+  const recentTx = document.getElementById('recentTxPanel');
+  if (!panel || !mempoolCol || !recentTx) return;
+  if (window.innerWidth <= 1650){
+    panel.style.height = '';
+    panel.style.maxHeight = '';
+    return;
+  }
+  const rightCol = recentTx.closest('.panels-row');
+  const bottoms = [mempoolCol, rightCol].filter(Boolean)
+    .map(el => el.getBoundingClientRect().bottom);
+  const maxBottom = Math.max(...bottoms);
+  const panelTop = panel.getBoundingClientRect().top;
+  const target = Math.max(140, Math.round(maxBottom - panelTop));
+  panel.style.height = target + 'px';
+  panel.style.maxHeight = target + 'px';
+}
+
 // ── Latest Blocks ─────────────────────────────────────────────────────────
 // Adapted from KV5's Latest Blocks strip. That version fetched full verbose
 // blocks (getblock hash 2) over a private RPC proxy and computed fee
@@ -2151,7 +2162,7 @@ function bpRenderAll(isNewBlock){
 }
 function bpInitNav(){
   const scroll = document.getElementById('bpScroll');
-  const CARD_W = 120; // 108px card + 12px gap
+  const CARD_W = 156; // 140px card + 16px gap
   document.getElementById('bpNavLeft').addEventListener('click', () => scroll.scrollBy({left:-CARD_W, behavior:'smooth'}));
   document.getElementById('bpNavRight').addEventListener('click', () => scroll.scrollBy({left:CARD_W, behavior:'smooth'}));
   document.getElementById('bpNavFarLeft').addEventListener('click', () => scroll.scrollBy({left:-CARD_W*20, behavior:'smooth'}));
@@ -2709,11 +2720,11 @@ initHamburgerMenu();
 bpInitNav();
 bpInitModal();
 refreshChain().then(refreshMarket);
-fetchNodeCrawl();
 setInterval(refreshChain, CONFIG.REFRESH_CHAIN_MS);
 setInterval(refreshMarket, CONFIG.REFRESH_MARKET_MS);
-setInterval(fetchNodeCrawl, NODE_CRAWL_REFRESH_MS);
 setInterval(() => { if (state.scrubIndex < 0) render(); }, 1000); // keep the live clock ticking
+fetchNodeCrawl();
+setInterval(fetchNodeCrawl, NODE_CRAWL_REFRESH_MS);
 </script>
 </body>
 </html>
