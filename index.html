@@ -116,7 +116,7 @@
   .bp-meta-line{font-size:13px;font-family:'JetBrains Mono',monospace;color:var(--text);margin-top:7px;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .bp-age{color:var(--muted);}
-  .bp-pool{font-size:13px;font-family:'JetBrains Mono',monospace;color:var(--accent2);margin-top:7px;
+  .bp-pool{font-size:14px;font-family:'JetBrains Mono',monospace;color:var(--accent2);margin-top:7px;
     display:flex;align-items:center;gap:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .bp-pool-dot{width:9px;height:9px;border-radius:50%;background:var(--accent2);flex-shrink:0;}
   .bp-size-bar{position:absolute;bottom:0;left:0;right:0;height:12px;border-radius:0 0 9px 9px;background:rgba(255,255,255,.06);}
@@ -2108,6 +2108,12 @@ function bpMakeCard(b){
   const valStr = (rewardSats/1e8) >= 1 ? (rewardSats/1e8).toFixed(2) : (rewardSats/1e8).toFixed(4);
   const barColor = maxFee > 50 ? 'rgba(255,80,60,.8)' : maxFee > 20 ? 'rgba(245,140,35,.8)'
     : maxFee > 5 ? 'rgba(245,190,40,.8)' : 'rgba(0,212,170,.7)';
+  // Same palette the Miner Propagation pie/legend uses (poolColor() is a pure
+  // name->color hash, so a given pool always lands on the same color there
+  // and here) — makes it easy to spot a pool's mining frequency at a glance
+  // across the two panels. "Unknown" gets the pie's own neutral grey rather
+  // than joining the hashed palette, same as the pie legend treats "Other".
+  const poolDotColor = pool === 'Unknown' ? '#5a6b80' : poolColor(pool);
 
   card.innerHTML = `
     <div class="bp-height">${fmtN(b.height)}</div>
@@ -2115,7 +2121,7 @@ function bpMakeCard(b){
     <div class="bp-fee-txt"><span class="bp-fee-range">${feeStr}</span></div>
     <div class="bp-value-line"><div class="bp-value">${valStr}</div><div class="bp-value-unit">XBT</div></div>
     <div class="bp-meta-line">${fmtN(b.txCount||0)} TX · <span class="bp-age">${age}</span></div>
-    <div class="bp-pool"><div class="bp-pool-dot"></div>${bpEsc(pool)}</div>
+    <div class="bp-pool" style="color:${poolDotColor}"><div class="bp-pool-dot" style="background:${poolDotColor}"></div>${bpEsc(pool)}</div>
     <div class="bp-size-bar"><div class="bp-size-fill" style="width:${sizeBar}%"></div></div>
   `;
   return card;
