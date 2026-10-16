@@ -429,6 +429,8 @@
     padding:10px 16px 0;}
   .mp-chart{width:100%;height:100px;display:block;}
   .node-updated{font-size:9.5px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+  .node-lowerbound-note{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;
+    padding:10px 16px 0;line-height:1.4;}
 
   /* ── Recent Replacements badges ── */
   .rbf-badge{display:block;font-size:9px;font-weight:600;text-transform:uppercase;
@@ -638,10 +640,11 @@
   <div class="panel" id="nodePanel" style="margin-top:16px;">
     <div class="panel-head"><span>XBT Network Nodes</span><span class="node-updated" id="nodeUpdated">—</span></div>
     <div class="mp-stats">
-      <div class="mp-stat"><div class="mp-lab">Confirmed nodes</div><div class="mp-val" id="nodeCount">—</div></div>
+      <div class="mp-stat"><div class="mp-lab">XBT nodes (clearnet, chain-verified)</div><div class="mp-val" id="nodeCount">—</div></div>
       <div class="mp-stat"><div class="mp-lab">Peers probed</div><div class="mp-val" id="nodeProbed">—</div></div>
       <div class="mp-stat"><div class="mp-lab">IPv6 share</div><div class="mp-val" id="nodeIpv6">—</div></div>
     </div>
+    <div class="node-lowerbound-note">Each node is probed and confirmed to hold the post-fork chain. Tor and I2P nodes cannot be probed, so this is a lower bound.</div>
     <div class="mp-chart-lab">Node count history</div>
     <canvas id="nodeChart" class="mp-chart"></canvas>
   </div>
@@ -2042,6 +2045,35 @@ function drawNodeChart(){
   ctx.strokeStyle = '#00d4aa';
   ctx.lineWidth = 1.5;
   ctx.stroke();
+
+  // Mark where census-seeding kicked in (xbt-crawler handoff, Oct 2026): that
+  // run added the public node-census's clearnet addresses as extra seeds, so
+  // confirmed-node count can jump sharply right there. Without a marker that
+  // jump reads as organic network growth rather than a crawler methodology
+  // change, so it's called out explicitly once the history has a run past it.
+  const censusIdx = nodeHistory.findIndex(p => (p.censusSeeds||0) > 0);
+  if (censusIdx > 0){
+    const mx = pad + (censusIdx/(nodeHistory.length-1)) * (w - pad*2);
+    ctx.save();
+    ctx.setLineDash([3,3]);
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(mx, pad);
+    ctx.lineTo(mx, h - pad);
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.font = '9px JetBrains Mono, monospace';
+    ctx.textBaseline = 'top';
+    const label = 'census-seeded';
+    const labelW = ctx.measureText(label).width;
+    const lx = Math.max(pad, Math.min(w - pad - labelW, mx + 4));
+    ctx.fillText(label, lx, pad);
+    ctx.restore();
+  }
 }
 
 // Sizes the node panel so its bottom lines up with whichever side column —
