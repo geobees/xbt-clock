@@ -714,13 +714,19 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 <section class="tab" id="t-nodes">
   <h1 class="page">Nodes</h1><p class="lede">The XBT (BLAKE2b) node network, counted by an independent crawler.</p>
   <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
-    <div class="tile"><span class="k">Reachable XBT nodes</span><b id="nd-n">—</b></div><div class="tile"><span class="k">Peers probed</span><b id="nd-p">—</b></div>
-    <div class="tile"><span class="k">IPv6 share</span><b id="nd-6">—</b></div><div class="tile"><span class="k">Last crawl</span><b id="nd-t" style="font-size:clamp(14px,1.6vw,18px)">—</b></div></div>
-  <div class="card" style="margin-top:14px"><h3>Nodes over time <span class="r">chain-verified XBT nodes per crawl</span></h3>
+    <div class="tile"><span class="k">Reachable nodes</span><b id="nd-n">—</b></div><div class="tile"><span class="k">Known nodes</span><b id="nd-k">—</b></div>
+    <div class="tile"><span class="k">Stable nodes</span><b id="nd-s">—</b></div><div class="tile"><span class="k">Coinbase lock enforcing</span><b class="up" id="nd-e">—</b></div></div>
+  <div class="card" style="margin-top:14px"><h3>Nodes over time <span class="r">solid: reachable · dashed: known</span></h3>
     <div class="ranges" id="r-nodes"></div><div class="chartbox"><canvas id="c-nodes"></canvas></div>
-    <p class="note" id="nd-note">Counts come from published crawl results.</p></div>
-  <div class="grid" style="margin-top:14px" id="nd-ver-wrap" hidden>
-    <div class="card"><h3>Node versions</h3><div id="versions"></div></div>
+    <p class="note" id="nd-note">Loading…</p></div>
+  <div class="grid" style="margin-top:14px">
+    <div class="card"><h3>Node versions</h3><div id="versions"><div class="note">Loading…</div></div></div>
+    <div class="card"><h3>Coinbase lock soft fork</h3><div class="rows" id="lock-rows">
+      <div class="row"><span>Activation window</span><span>—</span></div><div class="row"><span>Enforcing nodes</span><span>—</span></div>
+      <div class="row"><span>Not enforcing</span><span>—</span></div><div class="row"><span>Window progress</span><span>—</span></div><div class="row"><span>Blocks remaining</span><span>—</span></div></div><div class="bar"><i id="lock-bar" style="width:0%"></i></div></div>
+    <div class="card"><h3>Sync status</h3><div class="rows" id="sync-rows">
+      <div class="row"><span>At tip</span><span>—</span></div><div class="row"><span>Near tip</span><span>—</span></div>
+      <div class="row"><span>Within a day</span><span>—</span></div><div class="row"><span>Behind</span><span>—</span></div></div></div>
   </div>
   <div class="xc" style="margin-top:14px">
   <div class="panel" id="nodePanel" style="margin-top:16px;">
@@ -735,7 +741,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     <canvas id="nodeChart" class="mp-chart"></canvas>
   </div>
 </div>
-  <p class="note">Node data: the XBT crawler (P2P probe, published by hand). Counts are a lower bound: Tor and I2P nodes cannot be probed. This site never shows node addresses.</p>
+  <p class="note">Top cards: B2B Node Census (independent DNS-seed crawler, hourly), counting reachable nodes that signal the fork bit. Panel above: the XBT crawler, which probes each clearnet node and confirms it holds the post-fork chain. Counts are lower bounds. This site never shows node addresses.</p>
 </section>
 
 <!-- MINING -->
@@ -1073,7 +1079,7 @@ var ICON={news:'<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M8 9h
 var TABS=[['clock','Clock'],['mempool','Mempool'],['|'],['dashboard','Stats'],['charts','Charts'],['nodes','Nodes'],['mining','Mining'],['|'],['news','News'],['about','About']];
 function $(id){return document.getElementById(id)}
 var D={};
-var API=window.XBT_API||'';
+var API=window.XBT_API||'';var CENSUS='https://lionthunderfingers.github.io/Bitcoin-Node-census/';
 var RANGES=['1D','7D','1M','3M','YTD','1Y','5Y','10Y','ALL'];
 function cv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
 function fit(c){var dpr=window.devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;c.width=w*dpr;c.height=h*dpr;var x=c.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);return{x:x,w:w,h:h}}
@@ -1104,12 +1110,12 @@ function note(c,msg){var f=fit(c);f.x.clearRect(0,0,f.w,f.h);f.x.fillStyle=cv('-
 function draw(key){var r=REG[key];if(!r||!r.canvas.clientWidth)return;var d=D[key];
  if(d===undefined){note(r.canvas,'Loading…');return}
  if(!d||!d.v.length){note(r.canvas,'No data yet');return}
- chart(r.canvas,d.v,{fmt:fm[r.series],xl:xlab(d.t,rst[key]),zero:r.zero,bars:r.bars})}
+ var o={fmt:fm[r.series],xl:xlab(d.t,rst[key]),zero:r.zero,bars:r.bars};if(d.known)o.line=d.known;chart(r.canvas,d.v,o)}
 async function loadSeries(key){var r=REG[key];if(!r)return;var tok=(r.tok=(r.tok||0)+1);
  try{
   var j;
-  if(r.series==='nodes'){var res=await fetch('./crawl-history.json',{cache:'no-store'});if(!res.ok)throw 0;var h=await res.json();if(!Array.isArray(h))throw 0;
-   var cut=Date.now()-(RSEC[rst[key]]||1e12)*1000;j={t:[],v:[]};h.forEach(function(p){var t=Date.parse(p.generatedAt||p.t||p.ts||p.time||'')||+(p.ts||p.t||0);if(typeof p.xbtConfirmed==='number'&&t>=cut){j.t.push(t);j.v.push(p.xbtConfirmed)}})}
+  if(r.series==='nodes'){var res=await fetch(CENSUS+'history.json',{cache:'no-store'});if(!res.ok)throw 0;var h=await res.json();if(!Array.isArray(h))throw 0;
+   var cut=Date.now()-(RSEC[rst[key]]||1e12)*1000;j={t:[],v:[],known:[]};h.forEach(function(p){var t=(p.ts||0)*1000;if(typeof p.b2b_reachable==='number'&&t>=cut){j.t.push(t);j.v.push(p.b2b_reachable);j.known.push(p.b2b)}})}
   else{var res2=await fetch(API+'/api/history?series='+r.series+'&range='+rst[key]);if(!res2.ok)throw 0;j=await res2.json()}
   if(tok!==r.tok)return;D[key]=j}catch(e){if(tok!==r.tok)return;D[key]=null}
  draw(key)}
@@ -3516,21 +3522,34 @@ async function pullApi(){
  try{POOL24=await J(API+'/api/pools?period=1d')}catch(e){}
  poolsCard();render();
 }
-// Nodes tab: crawler output published next to this page
-function setNode(id,v){T(id,v)}
+// Nodes tab: B2B Node Census (hourly), published as static JSON on GitHub Pages
+var CENSUS='https://lionthunderfingers.github.io/Bitcoin-Node-census/',stableCount=null;
+function nrow(scope,label,val){row(scope,label,val)}
+function esc(s){return String(s).replace(/[<>&"]/g,'')}
 async function pullNodes(){
  try{
-  var d=await J('./crawl-latest.json'),st=d.stats||{},peers=Array.isArray(d.peers)?d.peers:[];
-  setNode('nd-n',typeof st.xbtConfirmed==='number'?st.xbtConfirmed.toLocaleString('en-US'):peers.length.toLocaleString('en-US'));
-  setNode('nd-p',typeof st.totalProbed==='number'?st.totalProbed.toLocaleString('en-US'):'—');
-  var v6=peers.filter(function(p){return typeof p.ip==='string'&&p.ip.indexOf(':')>-1}).length;setNode('nd-6',peers.length?Math.round(100*v6/peers.length)+'%':'—');
-  var g=d.generatedAt?new Date(d.generatedAt):null;setNode('nd-t',g&&!isNaN(g)?g.toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—');
-  var cnt={};peers.forEach(function(p){var u=p.subver||p.userAgent||p.version;if(u)cnt[u]=(cnt[u]||0)+1});
-  var ks=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a]});
-  if(ks.length){$('nd-ver-wrap').hidden=false;var tot=peers.length;$('versions').innerHTML=ks.slice(0,8).map(function(k){var pc=cnt[k]/tot*100;return '<div class="poolrow"><div class="t"><span>'+k.replace(/[<>&]/g,'')+'</span><span class="num" style="color:var(--mute)">'+cnt[k]+' · '+pc.toFixed(1)+'%</span></div><div class="bar"><i style="width:'+pc+'%"></i></div></div>'}).join('')}
- }catch(e){setNode('nd-n','—');var n=$('nd-note');if(n)n.textContent='No crawl published yet. Run publish.js in the crawler project to add one.'}
+  var d=await J(CENSUS+'data.json'),reach=d.b2b_reachable,tip=state.tipHeight||d.max_height;
+  var vs=d.versions||{},enf=d.enforcing_versions||[],enfN=0;Object.keys(vs).forEach(function(k){if(enf.indexOf(k)>-1)enfN+=vs[k]});
+  T('nd-n',reach.toLocaleString('en-US'));T('nd-k',d.b2b.toLocaleString('en-US'));
+  T('nd-e',reach?(enfN/reach*100).toFixed(1)+'%':'—');
+  var upd=d.ts?new Date(d.ts*1000).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+  T('nd-note','Reachable nodes '+reach.toLocaleString('en-US')+(upd?' · census updated '+upd:'')+'.');
+  // versions
+  var ks=Object.keys(vs).sort(function(a,b){return vs[b]-vs[a]}),tot=ks.reduce(function(s,k){return s+vs[k]},0)||1;
+  $('versions').innerHTML=ks.slice(0,8).map(function(k){var pc=vs[k]/tot*100,e=enf.indexOf(k)>-1,nm=esc(k).replace(/^\/|\/$/g,'').replace(/\//g,' · ').replace(/Satoshi:/,'').replace(/Knots:/,'Knots ');
+   return '<div class="poolrow"><div class="t"><span>'+nm+(e?'<span class="badge">Coinbase lock</span>':'')+'</span><span class="num" style="color:var(--mute)">'+vs[k].toLocaleString('en-US')+' · '+pc.toFixed(1)+'%</span></div><div class="bar"><i style="width:'+pc.toFixed(1)+'%"></i></div></div>'}).join('');
+  // lock window
+  var a0=d.activation_height,a1=d.activation_end_height,L='lock-rows',prog=Math.max(0,Math.min(100,(tip-a0)/(a1-a0)*100));
+  nrow(L,'Activation window',a0.toLocaleString('en-US')+' → '+a1.toLocaleString('en-US'));
+  nrow(L,'Enforcing nodes',enfN.toLocaleString('en-US')+(reach?' ('+(enfN/reach*100).toFixed(1)+'%)':''));
+  nrow(L,'Not enforcing',(reach-enfN).toLocaleString('en-US'));nrow(L,'Window progress',prog.toFixed(1)+'%');
+  nrow(L,'Blocks remaining',Math.max(0,a1-tip).toLocaleString('en-US'));var lb=$('lock-bar');if(lb)lb.style.width=prog+'%';
+  var h=d.heights||{};nrow('sync-rows','At tip',String(h.tip||0));nrow('sync-rows','Near tip',String(h.near||0));nrow('sync-rows','Within a day',String(h.day||0));nrow('sync-rows','Behind',String(h.behind||0));
+ }catch(e){T('nd-note','The node census is unreachable right now.')}
+ try{if(stableCount==null){var s=await J(CENSUS+'stable-nodes.json');if(typeof s.qualifying_count==='number')stableCount=s.qualifying_count}}catch(e){}
+ if(stableCount!=null)T('nd-s',stableCount.toLocaleString('en-US'));
 }
-setInterval(render,5000);setInterval(pullApi,60000);setInterval(pullNodes,300000);
+setInterval(render,5000);setInterval(pullApi,60000);setInterval(pullNodes,600000);
 render();pullApi();pullNodes();
 })();
 </script>
