@@ -747,7 +747,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 <!-- MINING -->
 <section class="tab" id="t-mining">
   <h1 class="page">Mining</h1><p class="lede">Estimate what your hashrate could earn at today's live network numbers.</p>
-  <div class="card"><h3>Mining pools <span class="r pbtns" id="mPer"><button data-p="1d">24H</button><button data-p="1w" class="on">7D</button><button data-p="1m">30D</button></span></h3>
+  <div class="card"><h3>Mining pools <span class="r pbtns" id="mPer"><button data-p="1d" class="on">24H</button><button data-p="1w">7D</button><button data-p="1m">30D</button></span></h3>
     <div style="display:flex;flex-wrap:wrap;gap:8px 28px;align-items:flex-start">
       <div class="xc" style="flex:0 1 560px;min-width:0"><div class="prop-pie-row"><canvas id="mPie" width="225" height="225"></canvas><div class="prop-pie-legend" id="mPieLegend"></div></div></div>
       <div class="xc" style="flex:1 1 380px;min-width:0"><div id="mStat" style="font-size:12px;color:var(--mute);padding:2px 10px 8px"></div><div class="prop-scroll" style="max-height:none"><table class="prop-table"><thead><tr><th>Pool</th><th class="r">Blocks</th></tr></thead><tbody id="mPoolBody"></tbody></table></div></div>
@@ -1100,9 +1100,9 @@ function chart(c,data,o){
 }
 function roundRect(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
 var fm={price:function(v){return v.toFixed(2)},hash:function(v){return v.toFixed(v<10?2:1)+' PH/s'},diff:function(v){var u=['','K','M','G','T','P'],i=0;while(v>=1000&&i<5){v/=1000;i++}return v.toFixed(v<10?2:1)+(u[i]?' '+u[i]:'')},fees:function(v){return v.toFixed(4)+' XBT'},mem:function(v){return v.toFixed(2)+' vMB'},size:function(v){return v.toFixed(0)+' kB'},nodes:function(v){return Math.round(v)+''}};
-var rst={price:'1D',nodes:'ALL',hash:'3M',diff:'1M',fees:'1M',mem:'1M',size:'1M'};
-try{var saved=JSON.parse(localStorage.getItem('xbt-ranges')||'{}');for(var k in saved)if(k in rst)rst[k]=saved[k]}catch(e){}
-function save(){try{localStorage.setItem('xbt-ranges',JSON.stringify(rst))}catch(e){}}
+var rst={price:'1D',nodes:'7D',hash:'7D',diff:'1M',fees:'1D',mem:'1D',size:'1D'};
+try{var saved=JSON.parse(localStorage.getItem('xbt-ranges2')||'{}');for(var k in saved)if(k in rst)rst[k]=saved[k]}catch(e){}
+function save(){try{localStorage.setItem('xbt-ranges2',JSON.stringify(rst))}catch(e){}}
 var REG={};
 var RSEC={'1H':3600,'1D':86400,'7D':604800,'1M':2592000,'3M':7776000,'YTD':31622400,'1Y':31622400,'5Y':157680000,'10Y':315360000,'ALL':1e12};
 function xlab(t,range){var n=Math.min(5,t.length),o=[],short=(t[t.length-1]-t[0])<2*86400000;for(var i=0;i<n;i++){var d=new Date(t[Math.round(i*(t.length-1)/Math.max(1,n-1))]);o.push(short?d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):(d.getMonth()+1)+'/'+d.getDate())}return o.length>1?o:['','']}
@@ -1127,7 +1127,7 @@ var CH=[['hash','Hashrate','hash',['Hashrate (current)','Hash price','Blocks (24
  ['fees','Fees','fees',['Avg fees per block','Total fees (144 blocks)','Fees vs reward','Block subsidy value'],1,1],
  ['mem','Mempool','mem',['Pending txs','Mempool size','Blocks to clear','Next block'],1,0],
  ['size','Block size','size',['Avg block size','Txs in last block','Avg txs per block'],1,0]];
-var CNOTE={hash:'Hashrate sampled every minute by the XBT stats Worker.',diff:'Per-block difficulty from each block header.',fees:'Fees paid per block, from mempool.guide.',mem:'Mempool size sampled every minute; history starts when the Worker was deployed.',size:'Block size per block.'};
+var CNOTE={hash:'Estimated from block difficulty and the time the last 24 blocks took.',diff:'Per-block difficulty from each block header.',fees:'Fees paid per block, from mempool.guide.',mem:'Mempool size sampled every minute; history starts when the Worker was deployed.',size:'Block size per block.'};
 var stack=$('chart-stack');
 CH.forEach(function(c){var d=document.createElement('div');d.className='card';
  d.innerHTML='<h3>'+c[1]+'</h3><div class="statrow">'+c[3].map(function(s,i){return '<div><div class="k">'+s+'</div><b data-cs="'+c[0]+':'+i+'">—</b></div>'}).join('')+'</div><div class="ranges" id="r-'+c[0]+'"></div><div class="chartbox"><canvas id="c-'+c[0]+'"></canvas></div><p class="note">'+CNOTE[c[0]]+'</p>';stack.appendChild(d)});
@@ -3412,7 +3412,7 @@ async function load(per){
  t=tally(per);if(t.n){draw(t.rows);stat(t.n+' XBT blocks (from this browser)')}else stat('No XBT block data available.');
 }
 document.getElementById('mPer').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});load(b.dataset.p)});
-load('1w');
+load('1d');
 })();
 </script>
 <script>
