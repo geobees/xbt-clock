@@ -1154,6 +1154,9 @@ reg('price','price','c-price','r-price');
 reg('nodes','nodes','c-nodes','r-nodes');
 CH.forEach(function(c){reg(c[0],c[2],'c-'+c[0],'r-'+c[0],c[4],c[5])});
 Object.keys(REG).forEach(loadSeries);
+// the Worker adds a sample every minute, so keep open tabs current
+setInterval(function(){if(!document.hidden)Object.keys(REG).forEach(loadSeries)},60000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)Object.keys(REG).forEach(loadSeries)});
 window.addEventListener('resize',redraw);
 try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',redraw)}catch(e){}
 try{new MutationObserver(redraw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']})}catch(e){}
