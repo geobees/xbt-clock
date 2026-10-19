@@ -600,9 +600,10 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   <div class="brand-row"><div class="brand-logo" id="logoIcon" aria-hidden="true"></div><h1 class="brand">XBT CLOCK<small>BLAKE2b chain monitor</small></h1><button type="button" class="rail-burger" id="railBurger" aria-label="Menu" aria-expanded="false" aria-controls="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button></div>
   <nav role="tablist" aria-label="Pages" id="nav"></nav>
   <div class="rail-sep"></div>
+  <div class="pulse" style="margin-top:0"><span class="k" id="pulse-k"><i class="live-dot"></i>LIVE</span><b id="pulse-h">—</b><span>last block <em id="pulse-since" style="font-style:normal">—</em> ago</span><span>mined by <em id="pulse-pool" style="font-style:normal;color:var(--ink)">—</em></span></div>
   <div class="xc rail-controls" id="railControls">
     <div class="hdr-right" id="hdrRight">
-      <div class="status-pill"><span class="dot" id="liveDot"></span><span id="statusText">connecting…</span></div>
+      <div class="status-pill" style="display:none!important"><span class="dot" id="liveDot"></span><span id="statusText">connecting…</span></div>
       <div class="tz-control" id="tzControl">
         <div class="tz-trigger" id="tzTrigger" title="Change time zone">
           <span id="tzTriggerLabel">Local time</span>
@@ -635,7 +636,6 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     </div>
     <div class="rail-upd" id="lastUpdated">—</div>
   </div>
-  <div class="pulse"><span class="k" id="pulse-k"><i class="live-dot"></i>SAMPLE</span><b id="pulse-h">977,646</b><span>last block <em id="pulse-since" style="font-style:normal">1:43</em> ago</span></div>
 </aside>
 <main>
 <div class="xc xc-bar">
@@ -1149,7 +1149,7 @@ function calc(){if(!P.net||!P.bt||!P.price){$('m-share').textContent='–';$('m-
 
 $('copy').onclick=function(){var t=$('addr').textContent,b=this;function ok(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1400)}
  try{navigator.clipboard.writeText(t).then(ok,function(){var r=document.createRange();r.selectNodeContents($('addr'));var s=getSelection();s.removeAllRanges();s.addRange(r)})}catch(e){}};
-var sec=103;setInterval(function(){var s,real=false;try{if(state.blocks&&state.blocks.length){var lb=state.blocks[state.blocks.length-1],d=Math.max(0,Math.floor((Date.now()-lb.ts)/1000));s=Math.floor(d/60)+':'+String(d%60).padStart(2,'0');real=true;$('pulse-h').textContent=Number(state.tipHeight||lb.height).toLocaleString('en-US');$('pulse-k').innerHTML='<i class="live-dot"></i>LIVE'}}catch(e){}if(!real){sec++;s=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0')}$('since').textContent=s;$('pulse-since').textContent=s},1000);
+var sec=103;setInterval(function(){var s,real=false;try{if(state.blocks&&state.blocks.length){var lb=state.blocks[state.blocks.length-1],d=Math.max(0,Math.floor((Date.now()-lb.ts)/1000));s=Math.floor(d/60)+':'+String(d%60).padStart(2,'0');real=true;$('pulse-h').textContent=Number(state.tipHeight||lb.height).toLocaleString('en-US');$('pulse-k').innerHTML='<i class="live-dot"></i>LIVE'}}catch(e){}if(!real){s='—';$('pulse-k').innerHTML='<i class="live-dot"></i>CONNECTING'}$('since').textContent=s;$('pulse-since').textContent=s},1000);
 reg('price','price','c-price','r-price');
 reg('nodes','nodes','c-nodes','r-nodes');
 CH.forEach(function(c){reg(c[0],c[2],'c-'+c[0],'r-'+c[0],c[4],c[5])});
@@ -3484,6 +3484,8 @@ function render(){
  row(S,'Estimated date',left!=null?dt(Date.now()+left*bt*1000):'—');
  row(S,'Epoch progress',tip!=null?((tip%CONFIG.HALVING_INTERVAL)/CONFIG.HALVING_INTERVAL*100).toFixed(2)+'%':'—');
  row(S,'Reward after',sub!=null?(sub/2)+' XBT':'—');
+ // sidebar pulse: pool that mined the last block
+ var pp=$('pulse-pool');if(pp&&last){var pn=last.pool||'Unknown';pp.textContent=pn;pp.style.color=(pn==='Unknown'||pn==='Other')?'':(typeof poolColor==='function'?poolColor(pn):'')}
  // Latest block
  if(last){var L='lb-rows';row(L,'Block','#'+last.height.toLocaleString('en-US')+' · '+fmtAgo(last.ts));row(L,'Mined by',last.pool||'Unknown');row(L,'Transactions',last.txCount!=null?last.txCount.toLocaleString('en-US'):'—');row(L,'Size',fmtBytes(last.size));row(L,'Fees',last.totalFees!=null?(last.totalFees/1e8).toFixed(6)+' XBT':'—')}
  // Future halvings / supply
