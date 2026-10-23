@@ -81,8 +81,8 @@ h2.eyebrow{font:11px var(--mono);letter-spacing:.22em;text-transform:uppercase;c
 .note{font-size:12px;color:var(--mute);margin:10px 0 0}
 .poolrow{padding:7px 0}
 .poolrow .t{display:flex;justify-content:space-between;gap:10px}
-.bar{height:4px;margin-top:6px;overflow:hidden}
-.bar i{display:block;height:100%;background:radial-gradient(circle,var(--accent) 1.2px,transparent 1.5px) 0 0/5px 4px}
+.bar{height:4px;margin-top:6px;overflow:hidden;border-radius:2px;background:var(--line)}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:2px}
 .donutwrap{display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:center}
 .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--mute);justify-content:center;margin-top:8px}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
@@ -1091,9 +1091,19 @@ function chart(c,data,o){
  function Y(v){return padT+ph-(v-min)/(max-min)*ph}
  x.clearRect(0,0,W,H);x.font='11px JetBrains Mono, monospace';x.textBaseline='middle';
  for(var g=0;g<=4;g++){var v=min+(max-min)*g/4,yy=Y(v);x.strokeStyle=grid;x.lineWidth=1;x.beginPath();x.moveTo(padL,yy);x.lineTo(padL+pw,yy);x.stroke();x.fillStyle=mute;x.textAlign='left';x.fillText((o.fmt||String)(v),padL+pw+10,yy)}
- var step=4,cols=Math.floor(pw/step);
- for(var i=0;i<cols;i++){var t=i/(cols-1),p=t*(data.length-1),lo=Math.floor(p),hi=Math.min(data.length-1,lo+1),v=data[lo]+(data[hi]-data[lo])*(p-lo),top=Y(v);
-  for(var yy=top;yy<padT+ph;yy+=step){var al=.2+.8*(1-(yy-top)/Math.max(1,padT+ph-top));x.fillStyle=(yy-top<step)?accent:'rgba(232,178,60,'+(al*.55)+')';x.fillRect(padL+i*step,yy,3,3)}}
+ // Smooth filled area + stroked glow line (orthodox style) — one sample per
+ // horizontal pixel so the curve stays smooth regardless of how many raw
+ // data points came back, replacing the earlier dot-grid pixel fill.
+ var cols=Math.max(2,Math.round(pw)),pts=[];
+ for(var i=0;i<cols;i++){var t=i/(cols-1),p=t*(data.length-1),lo=Math.floor(p),hi=Math.min(data.length-1,lo+1),v=data[lo]+(data[hi]-data[lo])*(p-lo);pts.push([padL+i,Y(v)])}
+ var grad=x.createLinearGradient(0,padT,0,padT+ph);
+ grad.addColorStop(0,'rgba(232,178,60,0.45)');grad.addColorStop(1,'rgba(232,178,60,0)');
+ x.beginPath();x.moveTo(pts[0][0],padT+ph);
+ pts.forEach(function(pt){x.lineTo(pt[0],pt[1])});
+ x.lineTo(pts[pts.length-1][0],padT+ph);x.closePath();x.fillStyle=grad;x.fill();
+ x.beginPath();pts.forEach(function(pt,i){i?x.lineTo(pt[0],pt[1]):x.moveTo(pt[0],pt[1])});
+ x.strokeStyle=accent;x.lineWidth=1.75;x.lineJoin='round';x.lineCap='round';
+ x.shadowColor=accent;x.shadowBlur=6;x.stroke();x.shadowBlur=0;
  if(o.line){x.strokeStyle='#8a8a86';x.lineWidth=1;x.setLineDash([3,3]);x.beginPath();o.line.forEach(function(v,i){var X=padL+i/(o.line.length-1)*pw,YY=Math.max(padT,Y(Math.min(v,max)));i?x.lineTo(X,YY):x.moveTo(X,YY)});x.stroke();x.setLineDash([])}
  var last=data[data.length-1],ly=Y(last);x.fillStyle=accent;x.fillRect(padL+pw+4,ly-9,60,18);x.fillStyle=onA;x.textAlign='left';x.fillText((o.fmt||String)(last),padL+pw+8,ly);
  x.fillStyle=mute;var labels=o.xl||['',''];for(var k=0;k<labels.length;k++){x.textAlign=k===0?'left':k===labels.length-1?'right':'center';x.fillText(labels[k],padL+pw*k/(labels.length-1),H-8)}
