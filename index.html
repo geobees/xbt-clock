@@ -32,6 +32,13 @@ nav button[aria-selected=true]{background:var(--accent-soft);color:var(--accent)
 nav button svg{width:16px;height:16px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8}
 nav .sep{height:1px;background:var(--line);margin:8px 12px}
 .pulse{margin-top:auto;background:var(--surface);border-radius:4px;padding:14px;display:grid;gap:4px;border:1px solid var(--line)}
+.pulse{transition:border-color .3s ease,background .3s ease}
+/* sidebar LIVE box painted with the latest block's cesspool.lol grade */
+.pulse.cp-pristine{--cpt:rgba(127,208,234,.22);--cpb:rgba(127,208,234,.65);}
+.pulse.cp-tainted{--cpt:rgba(127,165,165,.22);--cpb:rgba(127,165,165,.65);}
+.pulse.cp-foul{--cpt:rgba(168,144,79,.24);--cpb:rgba(168,144,79,.70);}
+.pulse.cp-raw{--cpt:rgba(154,91,52,.30);--cpb:rgba(154,91,52,.80);}
+.pulse[class*="cp-"]{background:linear-gradient(180deg,var(--cpt) 0%,var(--surface) 100%);border-color:var(--cpb);box-shadow:inset 0 0 0 1px var(--cpb);}
 .pulse .k{font:500 11px var(--mono);color:var(--mute);letter-spacing:.04em}
 .pulse b{font:400 18px var(--display);letter-spacing:.02em}
 .pulse span{font:12px var(--mono);color:var(--mute)}
@@ -178,6 +185,27 @@ footer{border-top:1px solid var(--line);margin-top:36px;padding:20px 0 0;font-si
     padding:12px 12px 18px 12px;cursor:pointer;position:relative;margin-top:18px;margin-right:16px;
     transition:border-color .2s ease,background .2s ease;}
 .xc .bp-block:hover{background:var(--surface);border-color:rgba(111,191,90,.5);}
+/* cesspool.lol spam grade — colors taken from their block cubes/labels */
+.xc .bp-block{--cp:transparent;height:196px;}
+.xc .bp-block::before{content:'';position:absolute;left:0;right:0;top:0;height:6px;background:var(--cp);border-radius:4px 4px 0 0;}
+.xc .bp-block.cp-pristine{--cp:#7fd0ea;} .xc .bp-block.cp-tainted{--cp:#7fa5a5;}
+.xc .bp-block.cp-foul{--cp:#a8904f;} .xc .bp-block.cp-raw{--cp:#9a5b34;}
+/* tinted card body: grade color fades into the normal surface toward the bottom */
+.xc .bp-block.cp-pristine{--cpt:rgba(127,208,234,.20);--cpb:rgba(127,208,234,.45);}
+.xc .bp-block.cp-tainted{--cpt:rgba(127,165,165,.20);--cpb:rgba(127,165,165,.45);}
+.xc .bp-block.cp-foul{--cpt:rgba(168,144,79,.22);--cpb:rgba(168,144,79,.50);}
+.xc .bp-block.cp-raw{--cpt:rgba(154,91,52,.28);--cpb:rgba(154,91,52,.60);}
+.xc .bp-block[class*="cp-"]{background:linear-gradient(180deg,var(--cpt) 0%,var(--surface2) 85%);border-color:var(--cpb);}
+.xc .bp-block[class*="cp-"]:hover{background:linear-gradient(180deg,var(--cpb) 0%,var(--surface) 90%);}
+.xc .bp-grade{font-size:11px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;margin:-3px 0 6px;white-space:nowrap;color:var(--muted);min-height:14px;}
+.xc .bp-grade a{color:inherit;text-decoration:none;}
+.xc .bp-grade.g-pristine{color:#6fd3ee;} .xc .bp-grade.g-tainted{color:#b9a15a;}
+.xc .bp-grade.g-foul{color:#d4953a;} .xc .bp-grade.g-raw{color:#cf6a3e;}
+.xc .bp-cp-btn{display:inline-flex;align-items:center;gap:6px;margin-left:10px;padding:3px 8px;vertical-align:middle;
+  border:1px solid var(--border2);border-radius:4px;background:transparent;color:var(--muted);font-size:10px;text-decoration:none;
+  transition:border-color .2s ease,background .2s ease;}
+.xc .bp-cp-btn:hover{border-color:#7fd0ea;background:rgba(127,208,234,.10);}
+.xc .bp-cp-btn img{height:16px;width:auto;display:block;}
 @keyframes bp-morph{
     0%{background:rgba(255,165,55,.22);border-color:rgba(255,170,60,.8);}
     100%{background:var(--surface2);border-color:var(--border2);}
@@ -399,6 +427,17 @@ footer{border-top:1px solid var(--line);margin-top:36px;padding:20px 0 0;font-si
     padding:8px 10px;background:var(--surface2);flex:none;}
 .xc .feed-h{display:flex;justify-content:space-between;font-size:11px;font-family:'JetBrains Mono',monospace;}
 .xc .feed-h .iv{color:var(--muted);}
+/* cesspool.lol grade on feed items: tinted body + grade-colored outline (left edge stays the pool color) */
+.xc .feed-item.cp-pristine{--cpt:rgba(127,208,234,.18);--cpb:rgba(127,208,234,.55);}
+.xc .feed-item.cp-tainted{--cpt:rgba(127,165,165,.18);--cpb:rgba(127,165,165,.55);}
+.xc .feed-item.cp-foul{--cpt:rgba(168,144,79,.20);--cpb:rgba(168,144,79,.60);}
+.xc .feed-item.cp-raw{--cpt:rgba(154,91,52,.26);--cpb:rgba(154,91,52,.70);}
+.xc .feed-item[class*="cp-"]{background:linear-gradient(90deg,var(--cpt),transparent 85%);border-top-color:var(--cpb);border-right-color:var(--cpb);border-bottom-color:var(--cpb);}
+.xc .feed-h{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;}
+.xc .feed-h .iv{grid-column:3;justify-self:end;}
+.xc .feed-h .fg{grid-column:2;justify-self:center;font-size:.85em;letter-spacing:.05em;text-transform:uppercase;}
+.xc .feed-h .fg.g-pristine{color:#6fd3ee;} .xc .feed-h .fg.g-tainted{color:#b9a15a;}
+.xc .feed-h .fg.g-foul{color:#d4953a;} .xc .feed-h .fg.g-raw{color:#cf6a3e;}
 .xc .feed-m{display:flex;justify-content:space-between;gap:8px;font-size:9.5px;color:var(--muted);
     margin-top:3px;font-family:'JetBrains Mono',monospace;}
 .xc .feed-pool{display:flex;align-items:center;gap:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -600,7 +639,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   <div class="brand-row"><div class="brand-logo" id="logoIcon" aria-hidden="true"></div><h1 class="brand">XBT CLOCK<small>BLAKE2b chain monitor</small></h1><button type="button" class="rail-burger" id="railBurger" aria-label="Menu" aria-expanded="false" aria-controls="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button></div>
   <nav role="tablist" aria-label="Pages" id="nav"></nav>
   <div class="rail-sep"></div>
-  <div class="pulse" style="margin-top:0"><span class="k" id="pulse-k"><i class="live-dot"></i>LIVE</span><b id="pulse-h">—</b><span>last block <em id="pulse-since" style="font-style:normal">—</em> ago</span><span>mined by <em id="pulse-pool" style="font-style:normal;color:var(--ink)">—</em></span></div>
+  <div class="pulse" style="margin-top:0"><span class="k" id="pulse-k"><i class="live-dot"></i>LIVE</span><b id="pulse-h">—</b><span>last block <em id="pulse-since" style="font-style:normal">—</em> ago</span><span>mined by <em id="pulse-pool" style="font-style:normal;color:var(--ink)">—</em></span><span id="pulse-grade" style="display:none;letter-spacing:.06em;text-transform:uppercase"></span></div>
   <div class="xc rail-controls" id="railControls">
     <div class="hdr-right" id="hdrRight">
       <div class="status-pill" style="display:none!important"><span class="dot" id="liveDot"></span><span id="statusText">connecting…</span></div>
@@ -1049,6 +1088,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     <tr><th>Source</th><th>Used for</th></tr>
     <tr><td><b>mempool.guide</b><br><span style="color:var(--mute)">mempool.space-compatible API</span></td><td>Block tip and recent blocks, difficulty adjustment, 3-day hashrate, fee tiers, mempool size and incoming transactions, recent transactions, fee replacements (RBF), miner coinbase tags (propagation report), and the block, transaction and address lookups.</td></tr>
     <tr><td><b>mempool.kilombino.com</b></td><td>Backup chain explorer, compared against mempool.guide on every update.</td></tr>
+    <tr><td><b><a href="https://cesspool.lol" target="_blank" rel="noopener" style="color:inherit">cesspool.lol</a></b><br><span style="color:var(--mute)">cesspool.lol/api/v1</span></td><td>Spam grades for each block (pristine, tainted, foul, raw) and the share of block weight taken by sewage transactions, shown on the block strip, the LIVE box, the Since last block list and the block details. Graded against Plumb and stock Knots policy; <a href="https://cesspool.lol/about/" target="_blank" rel="noopener" style="color:var(--accent)">how grading works</a>.</td></tr>
     <tr><td><b>Neoxa Exchange</b><br><span style="color:var(--mute)">neoxa.exchange</span></td><td>XBT/USDC and XBT/USDT price, 24h change and volume.</td></tr>
     <tr><td><b>NonKYC Exchange</b><br><span style="color:var(--mute)">api.nonkyc.io</span></td><td>XBT/USDT price, bid/ask, 24h change and volume.</td></tr>
     <tr><td><b>XBT stats Worker</b><br><span style="color:var(--mute)">Cloudflare Worker + D1 database</span></td><td>Records a sample every minute and keeps block history, so the charts, mining pool shares, 24h high/low and fee totals have history behind them.</td></tr>
@@ -2068,8 +2108,10 @@ function renderSinceLastBlock(){
   list.innerHTML = recent.map(b => {
     const name = b.pool || 'Unknown';
     const color = poolColor(name);
-    return `<div class="feed-item" style="border-left-color:${color}">
-      <div class="feed-h"><b>#${fmtN(b.height)}</b><span class="iv">${b.interval != null ? fmtDur(b.interval) : '—'}</span></div>
+    const cp = cpGrades.get(b.hash);
+    const gl = cp ? (CP_LABELS[cp.grade]||cp.grade) + (cp.grade === 'pristine' ? '' : ' ' + (cp.share*100).toFixed(1) + '%') : '';
+    return `<div class="feed-item${cp ? ' cp-' + cp.grade : ''}" style="border-left-color:${color}"${cp ? ` title="Spam grade (cesspool.lol): ${(cp.share*100).toFixed(2)}% sewage"` : ''}>
+      <div class="feed-h"><b>#${fmtN(b.height)}</b>${cp ? `<span class="fg g-${cp.grade}">${gl}</span>` : ''}<span class="iv">${b.interval != null ? fmtDur(b.interval) : '—'}</span></div>
       <div class="feed-m"><span class="feed-pool"><i style="background:${color}"></i>${name}</span><span>${fmtBytes(b.size)}${b.txCount != null ? ' · ' + fmtN(b.txCount) + ' tx' : ''}</span></div>
     </div>`;
   }).join('');
@@ -2545,6 +2587,76 @@ function alignNodePanelHeight(){
 const BP_MAX_CARDS = 150; // how many recent blocks to render as cards
 let bpMaxSize = 1;
 
+// ── cesspool.lol spam grades ────────────────────────────────────────────
+// Grades come from cesspool.lol's read-only API (credit + link required by
+// their terms). Keyed by block HASH — tip blocks can be replaced in a reorg.
+// Batch files hold 1000 blocks each (/blocks/<floor(height/1000)>.json), so
+// the whole strip costs 1-2 requests; closed batches are cached for the
+// session, the open one is re-read at most every 30 s (their limit: 30/min).
+const CP_LOGO = 'data:image/png;base64,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'; // transparent cesspool.lol logo
+const CP_BASE = 'https://cesspool.lol/api/v1';
+const CP_LABELS = {pristine:'Pristine', tainted:'Tainted', foul:'Foul', raw:'Raw'};
+const cpGrades = new Map();      // hash -> {grade, share, sewageTx, grayTx, url}
+const cpBatchAt = new Map();     // batch number -> last fetch ms
+let cpVersion = null, cpBusy = false;
+async function cpGetJSON(url){
+  try {                                            // direct first (works if CORS is open)
+    const r = await fetch(url, {cache:'no-store'});
+    if (r.ok) return await r.json();
+  } catch(e){}
+  return fetchJSON(url);                           // fall back to the Worker relay
+}
+function cpIngest(data){
+  const list = Array.isArray(data) ? data : (data && (data.blocks || Object.values(data))) || [];
+  for (const b of list){
+    if (!b || !b.hash || !b.grade) continue;
+    cpGrades.set(b.hash, {grade:String(b.grade), share:Number(b.sewage_share)||0,
+      sewageTx:b.sewage_tx, grayTx:b.gray_tx, url:b.url || ('https://cesspool.lol/b/' + b.height)});
+  }
+}
+async function cpRefresh(){
+  if (cpBusy || !state.blocks.length) return;
+  cpBusy = true;
+  try {
+    const recent = state.blocks.slice(-BP_MAX_CARDS);
+    const lo = Math.floor(recent[0].height/1000), hi = Math.floor(recent[recent.length-1].height/1000);
+    try {
+      const tip = await cpGetJSON(CP_BASE + '/tip.json');
+      if (tip && tip.grader_version && tip.grader_version !== cpVersion){
+        if (cpVersion) { cpGrades.clear(); cpBatchAt.clear(); }   // regraded: re-read everything
+        cpVersion = tip.grader_version;
+      }
+    } catch(e){}
+    const now = Date.now();
+    for (let n = lo; n <= hi; n++){
+      const last = cpBatchAt.get(n) || 0;
+      const open = n === hi;                       // newest batch still growing
+      if (last && (!open || now - last < 30000)) continue;
+      cpBatchAt.set(n, now);
+      try { cpIngest(await cpGetJSON(CP_BASE + '/blocks/' + n + '.json')); }
+      catch(e){ cpBatchAt.delete(n); }
+    }
+    bpRenderAll(false);
+    try { renderSinceLastBlock(); } catch(e){}
+  } finally { cpBusy = false; }
+}
+function cpPaintPulse(){
+  const el = document.querySelector('.pulse'); if (!el) return;
+  const last = state.blocks[state.blocks.length-1];
+  const cp = last && cpGrades.get(last.hash);
+  el.classList.remove('cp-pristine','cp-tainted','cp-foul','cp-raw');
+  if (cp){ el.classList.add('cp-' + cp.grade);
+    el.title = 'Latest block spam grade (cesspool.lol): ' + (CP_LABELS[cp.grade]||cp.grade) + ', ' + (cp.share*100).toFixed(2) + '% sewage'; }
+  else el.removeAttribute('title');
+  const g = document.getElementById('pulse-grade');
+  if (g){
+    if (cp){
+      const col = {pristine:'#6fd3ee', tainted:'#b9a15a', foul:'#d4953a', raw:'#cf6a3e'}[cp.grade] || '';
+      g.style.display = ''; g.style.color = col;
+      g.textContent = (CP_LABELS[cp.grade]||cp.grade) + (cp.grade === 'pristine' ? '' : ' ' + (cp.share*100).toFixed(1) + '%');
+    } else { g.style.display = 'none'; g.textContent = ''; }
+  }
+}
 function bpEsc(s){
   return String(s).replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
 }
@@ -2556,6 +2668,8 @@ function bpMakeCard(b){
   const card = document.createElement('div');
   card.className = 'bp-block';
   card.onclick = () => bpShowBlock(b.hash);
+  const cp = cpGrades.get(b.hash);
+  if (cp) card.classList.add('cp-' + cp.grade);
 
   const age = fmtAgo(b.ts);
   const pool = b.pool || 'Unknown';
@@ -2580,6 +2694,7 @@ function bpMakeCard(b){
 
   card.innerHTML = `
     <div class="bp-height">${fmtN(b.height)}</div>
+    <div class="bp-grade ${cp ? 'g-' + cp.grade : ''}" title="${cp ? 'Spam grade by cesspool.lol: ' + (cp.share*100).toFixed(2) + '% of block weight is sewage' : 'Spam grade pending (cesspool.lol)'}">${cp ? (CP_LABELS[cp.grade] || bpEsc(cp.grade)) + (cp.grade === 'pristine' ? '' : ' ' + (cp.share*100).toFixed(1) + '%') : '&nbsp;'}</div>
     <div class="bp-fee-bar" style="background:linear-gradient(90deg,rgba(111,191,90,.5),${barColor})"></div>
     <div class="bp-fee-txt"><span class="bp-fee-range">${feeStr}</span></div>
     <div class="bp-value-line"><div class="bp-value">${valStr}</div><div class="bp-value-unit">XBT</div></div>
@@ -2604,6 +2719,7 @@ function bpMakePendingCard(){
   return card;
 }
 function bpRenderAll(isNewBlock){
+  cpPaintPulse();
   const scroll = document.getElementById('bpScroll');
   if (!scroll) return;
   const recent = state.blocks.slice(-BP_MAX_CARDS).reverse(); // newest first
@@ -2627,6 +2743,8 @@ function bpRenderAll(isNewBlock){
     status.textContent = recent.length
       ? `${fmtN(recent.length)} of ${fmtN(state.blocks.length)} loaded blocks`
       : 'awaiting data';
+    if (recent.length) status.innerHTML = bpEsc(status.textContent) +
+      '<a class="bp-cp-btn" href="https://cesspool.lol" target="_blank" rel="noopener" title="Block spam grades by cesspool.lol">grades by <img src="' + CP_LOGO + '" alt="cesspool.lol"></a>';
   }
 }
 function bpInitNav(){
@@ -2743,6 +2861,9 @@ function bpRenderBlockDetail(d){
     html += `<div class="bp-modal-field" style="margin-top:8px"><div class="l">Previous block</div>
       <div class="v" style="cursor:pointer;color:var(--accent2)" onclick="bpShowBlock('${bpEsc(d.previousblockhash)}')">${bpEsc(d.previousblockhash)}</div></div>`;
   }
+  const cp = cpGrades.get(d.id);
+  html += `<div class="bp-modal-field" style="margin-top:8px"><div class="l">Spam grade (cesspool.lol)</div>
+    <div class="v">${cp ? `<span class="bp-grade g-${bpEsc(cp.grade)}" style="margin:0">${bpEsc(CP_LABELS[cp.grade] || cp.grade)}</span> · ${(cp.share*100).toFixed(2)}% of block weight is sewage · ${fmtN(cp.sewageTx||0)} sewage tx · ${fmtN(cp.grayTx||0)} gray tx · <a style="color:var(--accent2)" href="${bpEsc(cp.url)}" target="_blank" rel="noopener">view on cesspool.lol</a> <a class="bp-cp-btn" href="${bpEsc(cp.url)}" target="_blank" rel="noopener"><img src="${CP_LOGO}" alt="cesspool.lol"></a>` : 'not graded yet'}</div></div>`;
   document.getElementById('bpModalBody').innerHTML = html;
 }
 let bpUidCounter = 0;
@@ -2919,6 +3040,7 @@ function syncScrubBounds(){
 async function refreshChain(){
   try {
     await fetchTipAndBlocks();
+    cpRefresh();
     syncScrubBounds();
     setAlert('chain', null);
   } catch (e){
