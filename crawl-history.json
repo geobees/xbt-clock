@@ -160,5 +160,17 @@
     "xbtConfirmed": 26,
     "totalProbed": 77708,
     "alive": 2892
+  },
+  {
+    "generatedAt": "2026-11-13T05:46:57.381Z",
+    "xbtConfirmed": 28,
+    "totalProbed": 74185,
+    "alive": 3019
+  },
+  {
+    "generatedAt": "2026-11-14T07:18:15.305Z",
+    "xbtConfirmed": 28,
+    "totalProbed": 51932,
+    "alive": 3434
   }
 ]

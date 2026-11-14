@@ -1,201 +1,215 @@
 {
-  "generatedAt": "2026-11-11T13:49:27.339Z",
+  "generatedAt": "2026-11-14T07:18:15.305Z",
   "forkCheckHeight": 961700,
   "forkCheckHash": "000000000000000dad1e87a57075c9fc7b2486bac1efecede686671f6dbb8c4c",
   "stats": {
-    "totalProbed": 77708,
-    "alive": 2892,
-    "xbtConfirmed": 26,
-    "seeds": 66788,
-    "blake2bBitAdvertised": 171,
-    "servicesKnown": 2892,
-    "addressSpaceSize": 85313,
-    "addressSpaceServicesKnown": 31007,
-    "addressSpaceBlake2bAdvertised": 1610,
-    "censusSeeds": 202,
-    "censusConfirmed": 24
+    "totalProbed": 51932,
+    "alive": 3434,
+    "xbtConfirmed": 28,
+    "seeds": 37944,
+    "blake2bBitAdvertised": 207,
+    "servicesKnown": 3434,
+    "addressSpaceSize": 59797,
+    "addressSpaceServicesKnown": 35111,
+    "addressSpaceBlake2bAdvertised": 2045,
+    "censusSeeds": 200,
+    "censusConfirmed": 26
   },
   "peers": [
     {
-      "ip": "86.32.100.0",
+      "ip": "108.215.156.14",
       "port": 8333,
       "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981513,
-      "services": "268438537"
-    },
-    {
-      "ip": "174.56.179.159",
-      "port": 8333,
-      "userAgent": "/Satoshi:29.4.1/Knots:20260508rc4/",
-      "startHeight": 981514,
-      "services": "268438537"
-    },
-    {
-      "ip": "2a02:a31a:40dd:8980:a53c:1760:83f8:99e",
-      "port": 8333,
-      "userAgent": "/Satoshi:29.4.1/Knots:20260508/",
-      "startHeight": 981514,
-      "services": "268436489"
-    },
-    {
-      "ip": "47.203.64.175",
-      "port": 8333,
-      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981514,
-      "services": "268438537"
-    },
-    {
-      "ip": "135.181.129.252",
-      "port": 8333,
-      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981514,
+      "startHeight": 981908,
       "services": "268438537"
     },
     {
       "ip": "136.37.133.139",
       "port": 8333,
       "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981514,
-      "services": "268438537"
-    },
-    {
-      "ip": "97.91.192.209",
-      "port": 9333,
-      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981514,
-      "services": "268438601"
-    },
-    {
-      "ip": "129.228.37.230",
-      "port": 8333,
-      "userAgent": "/Satoshi:29.4.1/Knots:20260508/",
-      "startHeight": 981514,
-      "services": "268438537"
-    },
-    {
-      "ip": "51.155.197.112",
-      "port": 8333,
-      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981514,
-      "services": "268438537"
-    },
-    {
-      "ip": "173.25.44.90",
-      "port": 8333,
-      "userAgent": "/Satoshi:29.4.1/Knots:20260508/",
-      "startHeight": 981514,
+      "startHeight": 981908,
       "services": "268438537"
     },
     {
       "ip": "136.38.118.73",
       "port": 8333,
       "userAgent": "/Satoshi:29.4.1/Knots:20260508/",
-      "startHeight": 981514,
+      "startHeight": 981908,
       "services": "268438537"
     },
     {
-      "ip": "108.215.156.14",
-      "port": 8333,
-      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981514,
-      "services": "268438537"
-    },
-    {
-      "ip": "172.88.164.192",
-      "port": 8333,
-      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981515,
-      "services": "268438537"
-    },
-    {
-      "ip": "100.14.142.233",
-      "port": 8333,
-      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981515,
-      "services": "268438537"
-    },
-    {
-      "ip": "138.68.253.247",
-      "port": 8333,
-      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981515,
-      "services": "268438537"
-    },
-    {
-      "ip": "66.185.197.229",
-      "port": 8333,
-      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981515,
-      "services": "268438537"
-    },
-    {
-      "ip": "37.27.173.171",
-      "port": 8333,
-      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981515,
-      "services": "268438537"
-    },
-    {
-      "ip": "75.132.65.164",
+      "ip": "205.233.47.221",
       "port": 8333,
       "userAgent": "/Satoshi:29.4.1/Knots:20260508/",
-      "startHeight": 981515,
+      "startHeight": 981908,
+      "services": "268438537"
+    },
+    {
+      "ip": "2a02:a31a:40dd:8980:a53c:1760:83f8:99e",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.1/Knots:20260508/",
+      "startHeight": 981908,
+      "services": "268436489"
+    },
+    {
+      "ip": "97.91.192.209",
+      "port": 9333,
+      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
+      "startHeight": 981908,
+      "services": "268438601"
+    },
+    {
+      "ip": "51.155.197.112",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
+      "startHeight": 981908,
+      "services": "268438537"
+    },
+    {
+      "ip": "45.19.130.200",
+      "port": 9333,
+      "userAgent": "/Satoshi:29.4.2/Knots:20260508rc2/",
+      "startHeight": 981908,
+      "services": "268438601"
+    },
+    {
+      "ip": "70.8.118.116",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.1/Knots:20260508/",
+      "startHeight": 981908,
+      "services": "268438537"
+    },
+    {
+      "ip": "5.186.60.13",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
+      "startHeight": 981908,
+      "services": "268438537"
+    },
+    {
+      "ip": "173.25.44.90",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.1/Knots:20260508/",
+      "startHeight": 981908,
+      "services": "268438537"
+    },
+    {
+      "ip": "47.203.64.175",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
+      "startHeight": 981908,
+      "services": "268438537"
+    },
+    {
+      "ip": "86.32.100.0",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
+      "startHeight": 981908,
+      "services": "268438537"
+    },
+    {
+      "ip": "2a00:d4e0:107:4f02:7af2:9eff:fe90:31e0",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.1/Knots:20260508rc4/",
+      "startHeight": 981908,
+      "services": "268438601"
+    },
+    {
+      "ip": "98.118.56.133",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
+      "startHeight": 981908,
+      "services": "268438537"
+    },
+    {
+      "ip": "136.24.46.236",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
+      "startHeight": 981909,
+      "services": "268438537"
+    },
+    {
+      "ip": "174.56.179.159",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.1/Knots:20260508rc4/",
+      "startHeight": 981909,
       "services": "268438537"
     },
     {
       "ip": "49.13.153.8",
       "port": 8333,
       "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981515,
+      "startHeight": 981909,
       "services": "268438601"
     },
     {
-      "ip": "107.173.15.207",
+      "ip": "2806:2f0:56e1:c022:9dd:51fa:bcc7:ea05",
       "port": 8333,
       "userAgent": "/Satoshi:29.4.1/Knots:20260508/",
-      "startHeight": 981515,
+      "startHeight": 981909,
       "services": "268438537"
     },
     {
-      "ip": "70.8.118.116",
+      "ip": "45.30.107.246",
       "port": 8333,
-      "userAgent": "/Satoshi:29.4.1/Knots:20260508/",
-      "startHeight": 981515,
+      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
+      "startHeight": 981909,
+      "services": "268438541"
+    },
+    {
+      "ip": "100.14.142.233",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
+      "startHeight": 981909,
+      "services": "268438537"
+    },
+    {
+      "ip": "66.185.212.96",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
+      "startHeight": 981909,
+      "services": "268438537"
+    },
+    {
+      "ip": "116.193.208.3",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
+      "startHeight": 981909,
       "services": "268438537"
     },
     {
       "ip": "86.172.252.207",
       "port": 8333,
       "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981515,
+      "startHeight": 981909,
       "services": "268438537"
     },
     {
       "ip": "84.66.245.158",
       "port": 8333,
       "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981515,
+      "startHeight": 981909,
       "services": "268438537"
     },
     {
-      "ip": "193.92.36.68",
-      "port": 8333,
-      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
-      "startHeight": 981515,
-      "services": "268438537"
-    },
-    {
-      "ip": "2806:2f0:56e1:c022:9dd:51fa:bcc7:ea05",
+      "ip": "107.173.15.207",
       "port": 8333,
       "userAgent": "/Satoshi:29.4.1/Knots:20260508/",
-      "startHeight": 981515,
+      "startHeight": 981909,
       "services": "268438537"
     },
     {
       "ip": "110.148.144.97",
       "port": 8333,
       "userAgent": "/Satoshi:29.4.1/Knots:20260508/",
-      "startHeight": 981515,
+      "startHeight": 981909,
+      "services": "268438537"
+    },
+    {
+      "ip": "193.92.36.68",
+      "port": 8333,
+      "userAgent": "/Satoshi:29.4.2/Knots:20260508/",
+      "startHeight": 981909,
       "services": "268438537"
     }
   ]
